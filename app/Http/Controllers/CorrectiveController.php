@@ -78,9 +78,12 @@ class CorrectiveController extends Controller
      */
     public function show($id)
     {
+        // dd($id);
+        $corrective = Corrective::findOrFail($id);
+
         return view('corrective.details',
             array(
-                ''
+                'corrective' => $corrective
             )
         );
     }

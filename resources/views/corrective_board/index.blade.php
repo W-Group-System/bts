@@ -126,15 +126,15 @@
                                         <i class="fe fe-more-vertical"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                        <li><a class="dropdown-item" href="{{ url('/corrective/show/'.$corrective->id) }}"><i
                                                     class="ri-eye-line me-1 align-middle d-inline-block"></i>View</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                        {{-- <li><a class="dropdown-item" href="javascript:void(0);"><i
                                                     class="ri-delete-bin-line me-1 align-middle d-inline-block"></i>Delete</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                        </li> --}}
+                                        {{-- <li><a class="dropdown-item" href="javascript:void(0);"><i
                                                     class="ri-edit-line me-1 align-middle d-inline-block"></i>Edit</a>
-                                        </li>
+                                        </li> --}}
                                     </ul>
                                 </div>
                             </div>

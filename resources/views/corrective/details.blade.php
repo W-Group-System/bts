@@ -1,3 +1,6 @@
+@extends('layouts.header')
+
+@section('content')
 <!-- Page Header -->
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
     <h1 class="page-title fw-semibold fs-18 mb-0">Task Details</h1>
@@ -18,21 +21,20 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="card-title">Task Summary</div>
+                @if($corrective->corrective_board_id == 1)
                 <div class="btn-list">
                     <button class="btn btn-success btn-sm btn-wave me-0"><i
                             class="ri-edit-line me-1 align-middle"></i>Edit Task</button>
                 </div>
+                @endif
             </div>
             <div class="card-body">
                 <h5 class="fw-semibold mb-4 task-title">
-                    Update ynex new project design.
+                    {{ $corrective->title }}
                 </h5>
                 <div class="fs-15 fw-semibold mb-2">Task Description :</div>
-                <p class="text-muted task-description">The current website design needs a refresh to improve user
-                    experience and enhance visual appeal. The goal is to create a modern and responsive design that
-                    aligns with the latest web design trends. The updated design should ensure seamless navigation, easy
-                    readability, and a cohesive visual identity.</p>
-                <div class="fs-15 fw-semibold mb-2">Key tasks :</div>
+                <p class="text-muted task-description">{!! $corrective->task  !!}/p>
+                {{-- <div class="fs-15 fw-semibold mb-2">Key tasks :</div>
                 <div>
                     <ul class="task-details-key-tasks mb-0">
                         <li>Conducting a comprehensive analysis of the existing website design.</li>
@@ -43,7 +45,7 @@
                         <li>Conducting a final review to ensure all design elements are consistent and visually
                             appealing.</li>
                     </ul>
-                </div>
+                </div> --}}
             </div>
             <div class="card-footer">
                 <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
@@ -469,3 +471,4 @@
     </div>
 </div>
 <!--End::row-1 -->
+@endsection

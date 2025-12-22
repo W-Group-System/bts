@@ -60,6 +60,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/update/{id}', 'CorrectiveController@update');
         Route::post('/cancel/{id}', 'CorrectiveController@cancelled');
         Route::post('/update-status','CorrectiveController@updateStatus');
+        Route::get('/show/{id}','CorrectiveController@show');
     });
 
     // Corrective Board
