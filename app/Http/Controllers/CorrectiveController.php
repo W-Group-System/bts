@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Building;
 use App\Corrective;
+use App\CorrectiveBoard;
 use Illuminate\Http\Request;
 
 class CorrectiveController extends Controller
@@ -62,6 +63,7 @@ class CorrectiveController extends Controller
         $corrective->created_by = auth()->user()->id;
         $corrective->status = "New";
         $corrective->building_id = $request->building;
+        $corrective->corrective_board_id = 1;
         $corrective->save();
 
         toastr()->success('Successfully Saved');
@@ -76,7 +78,11 @@ class CorrectiveController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('corrective.details',
+            array(
+                ''
+            )
+        );
     }
 
     /**
@@ -138,6 +144,18 @@ class CorrectiveController extends Controller
         $corrective->save();
 
         toastr()->success('Successfully Cancelled');
+        return back();
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $correctiveBoard = CorrectiveBoard::where('name', $request->status)->first();
+        // dd($correctiveBoard);
+        $corrective = Corrective::findOrFail($request->id);
+        $corrective->corrective_board_id = $correctiveBoard->id;
+        $corrective->save();
+
+        toastr()->success('Successfully Saved');
         return back();
     }
 }

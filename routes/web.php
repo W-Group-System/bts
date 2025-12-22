@@ -59,5 +59,13 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/store', 'CorrectiveController@store');
         Route::post('/update/{id}', 'CorrectiveController@update');
         Route::post('/cancel/{id}', 'CorrectiveController@cancelled');
+        Route::post('/update-status','CorrectiveController@updateStatus');
+    });
+
+    // Corrective Board
+    Route::get('corrective-board', 'CorrectiveBoardController@index');
+    Route::prefix('corrective-board')->group(function() {
+        Route::post('/store','CorrectiveBoardController@store');
+        Route::get('/show/{id}','CorrectiveBoardController@show');
     });
 });

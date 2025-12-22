@@ -164,6 +164,12 @@
                             </a>
                         </li>
                         <li class="slide">
+                            <a href="{{ url('corrective-board') }}" class="side-menu__item">
+                                <i class="bi bi-clipboard2 side-menu__icon"></i>
+                                <span class="side-menu__label">Corrective Board</span>
+                            </a>
+                        </li>
+                        <li class="slide">
                             <a href="{{ url('') }}" class="side-menu__item">
                                 <i class="bx bx-file side-menu__icon"></i>
                                 <span class="side-menu__label">Reports</span>
