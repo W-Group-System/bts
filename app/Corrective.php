@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Corrective extends Model
 {
-    public function assign_to()
+    public function assignTo()
     {
         return $this->belongsTo(User::class,'assign_to','id');
     }
@@ -14,8 +14,20 @@ class Corrective extends Model
     {
         return $this->belongsTo(User::class,'created_by','id');
     }
+    public function assignBy()
+    {
+        return $this->belongsTo(User::class,'assign_by','id');
+    }
     public function building()
     {
         return $this->belongsTo(Building::class);
+    }
+    public function correctiveBoard()
+    {
+        return $this->belongsTo(CorrectiveBoard::class);
+    }
+    public function correctiveAttachment()
+    {
+        return $this->hasMany(CorrectiveAttachment::class);
     }
 }

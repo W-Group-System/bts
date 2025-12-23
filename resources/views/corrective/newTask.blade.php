@@ -6,7 +6,7 @@
                 <h6 class="modal-title">Add Task</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST" action="{{ url('/corrective/store') }}">
+            <form method="POST" action="{{ url('/corrective/store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body px-4">
                     <div class="row gy-2">
@@ -56,16 +56,13 @@
                                 <option value="Low" @if(old('priority') == "Low") selected @endif>Low</option>
                             </select>
                         </div>
-                        {{-- <div class="col-xl-12">
-                            <label class="form-label">Assigned To</label>
-                            <select class="form-control" name="choices-multiple-remove-button1"
-                                id="choices-multiple-remove-button1" multiple>
-                                <option value="Choice 1">Angelina May</option>
-                                <option value="Choice 2">Kiara advain</option>
-                                <option value="Choice 3">Hercules Jhon</option>
-                                <option value="Choice 4">Mayor Kim</option>
-                            </select>
-                        </div> --}}
+                        <div class="col-xl-12">
+                            <label class="form-label">Attachments</label>
+                            <input type="file" class="blog-images @if($errors->has('attachments')) is-invalid @endif" name="attachments[]" multiple data-allow-reorder="true" data-max-file-size="3MB" data-max-files="6">
+                            @if($errors->has('attachments'))
+                                <span class="invalid-feedback">{{ $errors->first('attachments') }}</span>
+                            @endif
+                        </div>
                         <div class="col-xl-12">
                             <label class="form-label">Task</label>
                             <textarea name="task" class="summernote form-control @if($errors->has('task')) is-invalid @endif" cols="30" rows="10">{{ old('task') }}</textarea>

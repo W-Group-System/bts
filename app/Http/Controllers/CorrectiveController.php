@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Building;
 use App\Corrective;
+use App\CorrectiveAttachment;
 use App\CorrectiveBoard;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class CorrectiveController extends Controller
      */
     public function index()
     {
-        $corrective = Corrective::with('assign_to','building','createdBy')->get();
+        $corrective = Corrective::with('assignTo','building','createdBy')->get();
         $buildings = Building::where('status','Active')->get();
         
         return view('corrective.index',
@@ -51,7 +52,8 @@ class CorrectiveController extends Controller
             'title' => 'required',
             'due_date' => 'required',
             'priority' => 'required|in:Low,Medium,High',
-            'task' => 'required'
+            'task' => 'required',
+            'attachments' => 'required'
         ]);
 
         $corrective = new Corrective;
@@ -66,6 +68,23 @@ class CorrectiveController extends Controller
         $corrective->corrective_board_id = 1;
         $corrective->save();
 
+        $attachments = $request->file('attachments');
+        foreach($attachments as $attachment)
+        {
+            $size = $attachment->getSize();
+
+            $name = time()."_".$attachment->getClientOriginalName();
+            $attachment->move(public_path('corrective_attachments'),$name);
+            $file = "/corrective_attachments/".$name;
+
+            $corrective_attachment = new CorrectiveAttachment;
+            $corrective_attachment->corrective_id = $corrective->id;
+            $corrective_attachment->attachment = $file;
+            $corrective_attachment->name = $name;
+            $corrective_attachment->size = $size;
+            $corrective_attachment->save();
+        }
+
         toastr()->success('Successfully Saved');
         return back();
     }
@@ -79,7 +98,7 @@ class CorrectiveController extends Controller
     public function show($id)
     {
         // dd($id);
-        $corrective = Corrective::findOrFail($id);
+        $corrective = Corrective::with('building','createdBy','assignTo','assignBy','correctiveBoard','correctiveAttachment')->findOrFail($id);
 
         return view('corrective.details',
             array(

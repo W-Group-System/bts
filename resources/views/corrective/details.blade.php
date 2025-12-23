@@ -4,14 +4,14 @@
 <!-- Page Header -->
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
     <h1 class="page-title fw-semibold fs-18 mb-0">Task Details</h1>
-    <div class="ms-md-1 ms-0">
+    {{-- <div class="ms-md-1 ms-0">
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="#">Task</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Task Details</li>
             </ol>
         </nav>
-    </div>
+    </div> --}}
 </div>
 <!-- Page Header Close -->
 
@@ -51,37 +51,66 @@
                 <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
                     <div>
                         <span class="d-block text-muted fs-12">Assigned By</span>
+                        @if($corrective->assignBy)
                         <div class="d-flex align-items-center">
                             <div class="me-2 lh-1">
                                 <span class="avatar avatar-xs avatar-rounded">
-                                    <img src="../assets/images/faces/15.jpg" alt="">
+                                    <img src="{{ asset('image/user.png') }}" alt="">
                                 </span>
                             </div>
-                            <span class="d-block fs-14 fw-semibold">H.J.Taylor</span>
+                            <span class="d-block fs-14 fw-semibold">
+                                {{ $corrective->assignBy->name }}
+                            </span>
                         </div>
+                        @else
+                        <span class="d-block fs-14 fw-semibold">No assign yet</span>
+                        @endif
                     </div>
                     <div>
                         <span class="d-block text-muted fs-12">Assigned Date</span>
-                        <span class="d-block fs-14 fw-semibold">24,June 2023</span>
+                        @if($corrective->date_assign)
+                        <span class="d-block fs-14 fw-semibold">{{ date('d, M Y', strtotime($corrective->date_assign)) }}</span>
+                        @else
+                        <span class="d-block fs-14 fw-semibold">No assign date</span>
+                        @endif
                     </div>
                     <div>
                         <span class="d-block text-muted fs-12">Due Date</span>
-                        <span class="d-block fs-14 fw-semibold">05,July 2023</span>
+                        <span class="d-block fs-14 fw-semibold">{{ date('d, M Y', strtotime($corrective->due_date)) }}</span>
                     </div>
                     <div class="task-details-progress">
                         <span class="d-block text-muted fs-12 mb-1">Progress</span>
+                        @php
+                            $progress = 0;
+                            if ($corrective->correctiveBoard->name == "todo")
+                            {
+                                $progress = 0;
+                            }
+                            elseif($corrective->correctiveBoard->name == "inprogress")
+                            {
+                                $progress = 30;
+                            }
+                            elseif($corrective->correctiveBoard->name == "review")
+                            {
+                                $progress = 60;
+                            }
+                            elseif($corrective->correctiveBoard->name == "done")
+                            {
+                                $progress = 100;
+                            }
+                        @endphp
                         <div class="d-flex align-items-center">
                             <div class="progress progress-xs progress-animate flex-fill me-2" role="progressbar"
-                                aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar bg-primary" style="width: 70%"></div>
+                                aria-valuenow="{{ $progress }}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar bg-primary" style="width: {{ $progress }}%"></div>
                             </div>
-                            <div class="text-muted fs-11">70%</div>
+                            <div class="text-muted fs-11">{{ $progress }}%</div>
                         </div>
                     </div>
-                    <div>
+                    {{-- <div>
                         <span class="d-block text-muted fs-12">Efforts</span>
                         <span class="d-block fs-14 fw-semibold">45H : 35M : 45S</span>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -107,114 +136,25 @@
                             </p>
                         </div>
                     </li>
-                    <li>
-                        <div>
-                            <span class="avatar avatar-sm avatar-rounded profile-timeline-avatar">
-                                <img src="../assets/images/faces/11.jpg" alt="">
-                            </span>
-                            <p class="text-muted mb-2">
-                                <span class="text-default"><b>Json Smith</b> reacted to the task &#128077;</span>.<span
-                                    class="float-end fs-11 text-muted">18,Dec 2023 - 12:16</span>
-                            </p>
-                            <p class="text-muted mb-0">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae, repellendus rem
-                                rerum excepturi aperiam ipsam temporibus inventore ullam tempora eligendi libero sequi
-                                dignissimos cumque, et a sint tenetur consequatur omnis!
-                            </p>
-                        </div>
-                    </li>
-                    <li>
-                        <div>
-                            <span class="avatar avatar-sm avatar-rounded profile-timeline-avatar">
-                                <img src="../assets/images/faces/4.jpg" alt="">
-                            </span>
-                            <p class="text-muted mb-2">
-                                <span class="text-default"><b>Alicia Keys</b> shared a document with
-                                    <b>you</b></span>.<span class="float-end fs-11 text-muted">21,Dec 2023 -
-                                    15:32</span>
-                            </p>
-                            <p class="profile-activity-media mb-0">
-                                <a href="javascript:void(0);">
-                                    <img src="../assets/images/media/file-manager/3.png" alt="">
-                                </a>
-                                <span class="fs-11 text-muted">432.87KB</span>
-                            </p>
-                        </div>
-                    </li>
-                    <li>
-                        <div>
-                            <span
-                                class="avatar avatar-sm bg-success-transparent avatar-rounded profile-timeline-avatar">
-                                P
-                            </span>
-                            <p class="text-muted mb-2">
-                                <span class="text-default"><b>You</b> shared a post with 4 people
-                                    <b>Simon,Sasha,Anagha,Hishen</b></span>.<span
-                                    class="float-end fs-11 text-muted">28,Dec 2023 - 18:46</span>
-                            </p>
-                            <p class="profile-activity-media mb-2">
-                                <a href="javascript:void(0);">
-                                    <img src="../assets/images/media/media-18.jpg" alt="">
-                                </a>
-                            </p>
-                            <div>
-                                <div class="avatar-list-stacked">
-                                    <span class="avatar avatar-sm avatar-rounded">
-                                        <img src="../assets/images/faces/2.jpg" alt="img">
-                                    </span>
-                                    <span class="avatar avatar-sm avatar-rounded">
-                                        <img src="../assets/images/faces/8.jpg" alt="img">
-                                    </span>
-                                    <span class="avatar avatar-sm avatar-rounded">
-                                        <img src="../assets/images/faces/2.jpg" alt="img">
-                                    </span>
-                                    <span class="avatar avatar-sm avatar-rounded">
-                                        <img src="../assets/images/faces/10.jpg" alt="img">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div>
-                            <span class="avatar avatar-sm avatar-rounded profile-timeline-avatar">
-                                <img src="../assets/images/media/media-39.jpg" alt="">
-                            </span>
-                            <p class="mb-1">
-                                <b>Json</b> Commented on Task post <a class="text-secondary"
-                                    href="javascript:void(0);"><u>#UI Technologies</u></a>.<span
-                                    class="float-end fs-11 text-muted">24,Dec 2023 - 14:34</span>
-                            </p>
-                            <p class="text-muted">Technology id developing rapidly keep up your work &#128076;</p>
-                            <p class="profile-activity-media mb-0">
-                                <a href="javascript:void(0);">
-                                    <img src="../assets/images/media/media-26.jpg" alt="">
-                                </a>
-                                <a href="javascript:void(0);">
-                                    <img src="../assets/images/media/media-29.jpg" alt="">
-                                </a>
-                            </p>
-                        </div>
-                    </li>
                 </ul>
             </div>
             <div class="card-footer">
                 <div class="d-flex align-items-center lh-1">
                     <div class="me-3">
                         <span class="avatar avatar-md avatar-rounded">
-                            <img src="../assets/images/faces/9.jpg" alt="">
+                            <img src="{{ asset('image/user.png') }}" alt="">
                         </span>
                     </div>
                     <div class="flex-fill me-2">
                         <div class="input-group">
                             <input type="text" class="form-control w-50" placeholder="Post Anything"
                                 aria-label="Recipient's username with two button addons">
-                            <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
-                                    class="bi bi-emoji-smile"></i></button>
+                            {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
+                                    class="bi bi-emoji-smile"></i></button> --}}
                             <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
                                     class="bi bi-paperclip"></i></button>
-                            <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
-                                    class="bi bi-camera"></i></button>
+                            {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
+                                    class="bi bi-camera"></i></button> --}}
                             <button class="btn btn-primary btn-wave waves-effect waves-light"
                                 type="button">Post</button>
                         </div>
@@ -236,7 +176,7 @@
                         <tbody>
                             <tr>
                                 <td><span class="fw-semibold">Task ID :</span></td>
-                                <td>SPK - 123</td>
+                                <td>{{ $corrective->building->code }}-{{ str_pad($corrective->id,3,"0",STR_PAD_LEFT) }}</td>
                             </tr>
                             <tr>
                                 <td><span class="fw-semibold">Task Tags :</span></td>
@@ -247,27 +187,38 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="fw-semibold">Project Name :</span></td>
+                                <td><span class="fw-semibold">Date Created :</span></td>
                                 <td>
-                                    Ynex admin & dashboard template
+                                    {{ date('M d Y', strtotime($corrective->created_at)) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td><span class="fw-semibold">Project Status :</span></td>
                                 <td>
-                                    <span class="fw-semibold text-secondary">Inprogress</span>
+                                    <span class="fw-semibold text-secondary">{{ $corrective->correctiveBoard->name }}</span>
                                 </td>
                             </tr>
                             <tr>
                                 <td><span class="fw-semibold">Project Priority :</span></td>
                                 <td>
+                                    @if($corrective->priority == "High")
                                     <span class="badge bg-danger-transparent">High</span>
+                                    @elseif($corrective->priority == "Medium")
+                                    <span class="badge bg-warning-transparent">High</span>
+                                    @elseif($corrective->priority == "Low")
+                                    <span class="badge bg-info-transparent">High</span>
+                                    @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td><span class="fw-semibold">Assigned To :</span></td>
                                 <td>
-                                    <div class="avatar-list-stacked">
+                                    @if($corrective->assignTo)
+                                    <span class="fw-semibold">{{ $corrective->assignTo->name }}</span>
+                                    @else
+                                    <span class="fw-semibold">No assign personnel</span>
+                                    @endif
+                                    {{-- <div class="avatar-list-stacked">
                                         <span class="avatar avatar-sm avatar-rounded" data-bs-toggle="tooltip"
                                             data-bs-custom-class="tooltip-primary" data-bs-original-title="Simon">
                                             <img src="../assets/images/faces/2.jpg" alt="img">
@@ -284,7 +235,7 @@
                                             data-bs-custom-class="tooltip-primary" data-bs-original-title="Hishen">
                                             <img src="../assets/images/faces/10.jpg" alt="img">
                                         </span>
-                                    </div>
+                                    </div> --}}
                                 </td>
                             </tr>
                         </tbody>
@@ -292,7 +243,7 @@
                 </div>
             </div>
         </div>
-        <div class="card custom-card overflow-hidden">
+        {{-- <div class="card custom-card overflow-hidden">
             <div class="card-header justify-content-between">
                 <div class="card-title">Sub Tasks</div>
                 <div>
@@ -360,7 +311,7 @@
                     </li>
                 </ul>
             </div>
-        </div>
+        </div> --}}
         <div class="card custom-card overflow-hidden">
             <div class="card-header">
                 <div class="card-title">
@@ -369,102 +320,32 @@
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
+                    @foreach ($corrective->correctiveAttachment as $attachment)
                     <li class="list-group-item">
                         <div class="d-flex align-items-center flex-wrap gap-2">
                             <div class="lh-1">
                                 <span class="avatar avatar-rounded p-2 bg-light">
-                                    <img src="../assets/images/media/file-manager/1.png" alt="">
+                                    <img src="{{ asset('assets/images/media/file-manager/1.png') }}" alt="">
                                 </span>
                             </div>
                             <div class="flex-fill">
-                                <a href="javascript:void(0);"><span class="d-block fw-semibold">Full Project</span></a>
-                                <span class="d-block text-muted fs-12 fw-normal">0.45MB</span>
+                                <a href="{{ url($attachment->attachment) }}"><span class="d-block fw-semibold">{{ $attachment->name }}</span></a>
+                                <span class="d-block text-muted fs-12 fw-normal">
+                                    @php
+                                        $fileSize = $attachment->size / 1024;
+                                    @endphp
+                                    {{ number_format($fileSize) }} MB
+                                </span>
                             </div>
-                            <div class="btn-list">
+                            {{-- <div class="btn-list">
                                 <button class="btn btn-sm btn-icon btn-info-light btn-wave"><i
                                         class="ri-edit-line"></i></button>
                                 <button class="btn btn-sm btn-icon btn-danger-light btn-wave"><i
                                         class="ri-delete-bin-line"></i></button>
-                            </div>
+                            </div> --}}
                         </div>
                     </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center flex-wrap gap-2">
-                            <div class="lh-1">
-                                <span class="avatar avatar-rounded bg-light">
-                                    <img src="../assets/images/media/file-manager/3.png" alt="">
-                                </span>
-                            </div>
-                            <div class="flex-fill">
-                                <a href="javascript:void(0);"><span class="d-block fw-semibold">assets.zip</span></a>
-                                <span class="d-block text-muted fs-12 fw-normal">0.99MB</span>
-                            </div>
-                            <div class="btn-list">
-                                <button class="btn btn-sm btn-icon btn-info-light btn-wave"><i
-                                        class="ri-edit-line"></i></button>
-                                <button class="btn btn-sm btn-icon btn-danger-light btn-wave"><i
-                                        class="ri-delete-bin-line"></i></button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center flex-wrap gap-2">
-                            <div class="lh-1">
-                                <span class="avatar avatar-rounded p-2 bg-light">
-                                    <img src="../assets/images/media/file-manager/1.png" alt="">
-                                </span>
-                            </div>
-                            <div class="flex-fill">
-                                <a href="javascript:void(0);"><span class="d-block fw-semibold">image-1.png</span></a>
-                                <span class="d-block text-muted fs-12 fw-normal">245KB</span>
-                            </div>
-                            <div class="btn-list">
-                                <button class="btn btn-sm btn-icon btn-info-light btn-wave"><i
-                                        class="ri-edit-line"></i></button>
-                                <button class="btn btn-sm btn-icon btn-danger-light btn-wave"><i
-                                        class="ri-delete-bin-line"></i></button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center flex-wrap gap-2">
-                            <div class="lh-1">
-                                <span class="avatar avatar-rounded bg-light">
-                                    <img src="../assets/images/media/file-manager/3.png" alt="">
-                                </span>
-                            </div>
-                            <div class="flex-fill">
-                                <a href="javascript:void(0);"><span
-                                        class="d-block fw-semibold">documentation.zip</span></a>
-                                <span class="d-block text-muted fs-12 fw-normal">2MB</span>
-                            </div>
-                            <div class="btn-list">
-                                <button class="btn btn-sm btn-icon btn-info-light btn-wave"><i
-                                        class="ri-edit-line"></i></button>
-                                <button class="btn btn-sm btn-icon btn-danger-light btn-wave"><i
-                                        class="ri-delete-bin-line"></i></button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center flex-wrap gap-2">
-                            <div class="lh-1">
-                                <span class="avatar avatar-rounded bg-light">
-                                    <img src="../assets/images/media/file-manager/3.png" alt="">
-                                </span>
-                            </div>
-                            <div class="flex-fill">
-                                <a href="javascript:void(0);"><span class="d-block fw-semibold">landing.zip</span></a>
-                                <span class="d-block text-muted fs-12 fw-normal">3.46MB</span>
-                            </div>
-                            <div class="btn-list">
-                                <button class="btn btn-sm btn-icon btn-info-light btn-wave"><i
-                                        class="ri-edit-line"></i></button>
-                                <button class="btn btn-sm btn-icon btn-danger-light btn-wave"><i
-                                        class="ri-delete-bin-line"></i></button>
-                            </div>
-                        </div>
-                    </li>
+                    @endforeach
                 </ul>
             </div>
         </div>
