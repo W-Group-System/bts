@@ -28,10 +28,11 @@
                 <div class="card-title">Task Summary</div>
                 @if($corrective->corrective_board_id == 1)
                 <div class="btn-list">
-                    <button class="btn btn-success btn-sm btn-wave me-0"><i
-                            class="ri-edit-line me-1 align-middle"></i>Edit Task</button>
+                    <button class="btn btn-success btn-sm btn-wave me-0" data-bs-toggle="modal" data-bs-target="#assignTask{{ $corrective->id }}"><i
+                            class="ri-edit-line me-1 align-middle" ></i>Assign Task</button>
                 </div>
                 @endif
+                @include('corrective.assign')
             </div>
             <div class="card-body">
                 <h5 class="fw-semibold mb-4 task-title">
@@ -357,7 +358,7 @@
                                 </span>
                             </div>
                             <div class="flex-fill">
-                                <a href="{{ url($attachment->attachment) }}"><span class="d-block fw-semibold">{{ $attachment->name }}</span></a>
+                                <a href="{{ url($attachment->attachment) }}" target="_blank"><span class="d-block fw-semibold">{{ $attachment->name }}</span></a>
                                 <span class="d-block text-muted fs-12 fw-normal">
                                     @php
                                         $fileSize = $attachment->size / 1024;

@@ -63,6 +63,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('/show/{id}','CorrectiveController@show');
         Route::post('/comments/{id}','CorrectiveController@comment');
         Route::post('/attach-comments/{id}','CorrectiveController@attachComment');
+        Route::post('/assign/{id}','CorrectiveController@assign');
     });
 
     // Corrective Board

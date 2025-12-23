@@ -128,8 +128,8 @@
                                                 +2
                                             </a>
                                         </div> --}}
-                                        @if($c->assign_to)
-                                            {{ $c->assign_to->name }}
+                                        @if($c->assignTo)
+                                            {{ $c->assignTo->name }}
                                         @endif
                                     </td>
                                     <td>

@@ -7,6 +7,7 @@ use App\Comment;
 use App\Corrective;
 use App\CorrectiveAttachment;
 use App\CorrectiveBoard;
+use App\User;
 use Illuminate\Http\Request;
 
 class CorrectiveController extends Controller
@@ -100,10 +101,12 @@ class CorrectiveController extends Controller
     {
         // dd($id);
         $corrective = Corrective::with('building','createdBy','assignTo','assignBy','correctiveBoard','correctiveAttachment','comment')->findOrFail($id);
+        $users = User::where('status','Active')->get();
 
         return view('corrective.details',
             array(
-                'corrective' => $corrective
+                'corrective' => $corrective,
+                'users' => $users
             )
         );
     }
@@ -175,10 +178,17 @@ class CorrectiveController extends Controller
         $correctiveBoard = CorrectiveBoard::where('name', $request->status)->first();
         // dd($correctiveBoard);
         $corrective = Corrective::findOrFail($request->id);
-        $corrective->corrective_board_id = $correctiveBoard->id;
-        $corrective->save();
+        if ($corrective->assign_to == auth()->user()->id)
+        {
+            $corrective->corrective_board_id = $correctiveBoard->id;
+            $corrective->save();
+            toastr()->success('Successfully Saved');
+        }
+        else 
+        {
+            toastr()->error('You cannot move this ticket because it is not assigned to you.');
+        }
 
-        toastr()->success('Successfully Saved');
         return back();
     }
 
@@ -223,6 +233,19 @@ class CorrectiveController extends Controller
         }
 
         toastr()->success('Successfully Saved');
+        return back();
+    }
+
+    public function assign(Request $request,$id)
+    {
+        // dd($request->all(),$id);
+        $corrective = Corrective::findOrFail($id);
+        $corrective->assign_to = $request->assignTo;
+        $corrective->assign_by = auth()->user()->id;
+        $corrective->date_assign = date('Y-m-d');
+        $corrective->save();
+
+        toastr()->success('Successfully Assigned');
         return back();
     }
 }
