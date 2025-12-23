@@ -61,6 +61,8 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/cancel/{id}', 'CorrectiveController@cancelled');
         Route::post('/update-status','CorrectiveController@updateStatus');
         Route::get('/show/{id}','CorrectiveController@show');
+        Route::post('/comments/{id}','CorrectiveController@comment');
+        Route::post('/attach-comments/{id}','CorrectiveController@attachComment');
     });
 
     // Corrective Board

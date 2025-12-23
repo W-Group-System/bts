@@ -1,5 +1,10 @@
 @extends('layouts.header')
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('assets/libs/filepond/filepond.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/libs/filepond-plugin-image-edit/filepond-plugin-image-edit.min.css') }}">
+@endsection
+
 @section('content')
 <!-- Page Header -->
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
@@ -120,22 +125,42 @@
             </div>
             <div class="card-body">
                 <ul class="list-unstyled profile-timeline">
-                    <li>
-                        <div>
-                            <span
-                                class="avatar avatar-sm bg-primary-transparent avatar-rounded profile-timeline-avatar">
-                                E
-                            </span>
-                            <p class="mb-2">
-                                <b>You</b> Commented on <b>Work Process</b> in this task <a class="text-secondary"
-                                    href="javascript:void(0);"><u>#New Task</u></a>.<span
-                                    class="float-end fs-11 text-muted">24,Dec 2023 - 14:34</span>
-                            </p>
-                            <p class="text-muted mb-0">
-                                Task is important and need to be completed on time to meet company work flow.
-                            </p>
-                        </div>
-                    </li>
+                    @foreach ($corrective->comment as $comment)
+                        <li>
+                            <div>
+                                <span
+                                    class="avatar avatar-sm bg-primary-transparent avatar-rounded profile-timeline-avatar">
+                                    @php
+                                        $name = auth()->user()->name;
+                                        $first_letter = substr($name, 0,1);
+                                    @endphp
+                                    {{ strtoupper($first_letter) }}
+                                </span>
+                                <p class="mb-2">
+                                    <b>{{ auth()->user()->name }}</b><a class="text-secondary"
+                                        href="javascript:void(0);"></a><span
+                                        class="float-end fs-11 text-muted">{{ $comment->created_at->diffForHumans() }}</span>
+                                </p>
+                                <p class="text-muted mb-0">
+                                    @if($comment->attachment)
+                                        @if($comment->attachment_type == "pdf")
+                                        <a href="{{ url($comment->attachment) }}" target="_blank">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                            Attachment
+                                        </a>
+                                        @else 
+                                        {{-- <a href="{{ url($comment->attachment) }}" target="_blank">
+                                            <i class="bi bi-file-image"></i>
+                                        </a> --}}
+                                        <img src="{{ url($comment->attachment) }}" alt="" class="img-thumbnail">
+                                        @endif
+                                    @else
+                                    {{ $comment->comment }}
+                                    @endif
+                                </p>
+                            </div>
+                        </li>
+                    @endforeach
                 </ul>
             </div>
             <div class="card-footer">
@@ -146,18 +171,21 @@
                         </span>
                     </div>
                     <div class="flex-fill me-2">
-                        <div class="input-group">
-                            <input type="text" class="form-control w-50" placeholder="Post Anything"
-                                aria-label="Recipient's username with two button addons">
-                            {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
-                                    class="bi bi-emoji-smile"></i></button> --}}
-                            <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
-                                    class="bi bi-paperclip"></i></button>
-                            {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
-                                    class="bi bi-camera"></i></button> --}}
-                            <button class="btn btn-primary btn-wave waves-effect waves-light"
-                                type="button">Post</button>
-                        </div>
+                        <form method="POST" action="{{ url('/corrective/comments/'.$corrective->id) }}">
+                            @csrf
+                            <div class="input-group">
+                                <input type="text" class="form-control w-50 @if($errors->has('comment')) is-invalid @endif" name="comment" placeholder="Post Anything" aria-label="Recipient's username with two button addons">
+                                {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
+                                        class="bi bi-emoji-smile"></i></button> --}}
+                                <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button" data-bs-toggle="modal" data-bs-target="#attachment"><i class="bi bi-paperclip"></i></button>
+                                {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
+                                        class="bi bi-camera"></i></button> --}}
+                                <button class="btn btn-primary btn-wave waves-effect waves-light" type="submit">Post</button>
+                                @if($errors->has('comment'))
+                                <span class="invalid-feedback">{{ $errors->first('comment') }}</span>
+                                @endif
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -178,14 +206,14 @@
                                 <td><span class="fw-semibold">Task ID :</span></td>
                                 <td>{{ $corrective->building->code }}-{{ str_pad($corrective->id,3,"0",STR_PAD_LEFT) }}</td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <td><span class="fw-semibold">Task Tags :</span></td>
                                 <td>
                                     <span class="badge bg-primary-transparent">UI/Ux</span>
                                     <span class="badge bg-primary-transparent">Designing</span>
                                     <span class="badge bg-primary-transparent">Development</span>
                                 </td>
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <td><span class="fw-semibold">Date Created :</span></td>
                                 <td>
@@ -352,4 +380,27 @@
     </div>
 </div>
 <!--End::row-1 -->
+
+@include('corrective.upload_attachment')
+@endsection
+
+@section('js')
+<script src="{{ asset('assets/libs/filepond/filepond.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-image-edit/filepond-plugin-image-edit.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-image-transform/filepond-plugin-image-transform.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        const MultipleElement = document.querySelector('.blog-images');
+        FilePond.create(MultipleElement, {
+            storeAsFile: true
+        });
+    });
+</script>
 @endsection

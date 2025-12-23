@@ -7,9 +7,9 @@
             <form method="POST" action="{{ url('/users/store') }}">
                 @csrf
                 <div class="modal-body">
-                    <div class="row">
+                    <div class="row gy-2">
                         <div class="col-md-12">
-                            <label>Building :</label>
+                            <label class="form-label">Building</label>
                             <select name="building" class="form-control @if($errors->has('building')) is-invalid @endif">
                                 <option value="" selected disabled hidden>Select building</option>
                                 @foreach ($buildings as $building)
@@ -21,21 +21,21 @@
                             @endif
                         </div>
                         <div class="col-md-12">
-                            <label>Name :</label>
+                            <label class="form-label">Name</label>
                             <input type="text" name="name" class="form-control form-control-sm @if($errors->has('name')) is-invalid @endif" value="{{ old('name') }}">
                             @if($errors->has('name'))
                             <span class="invalid-feedback">{{ $errors->first('name') }}</span>
                             @endif
                         </div>
                         <div class="col-md-12">
-                            <label>Email :</label>
+                            <label class="form-label">Email</label>
                             <input type="email" name="email" class="form-control form-control-sm @if($errors->has('email')) is-invalid @endif" value="{{ old('email') }}">
                             @if($errors->has('email'))
                             <span class="invalid-feedback">{{ $errors->first('email') }}</span>
                             @endif
                         </div>
                         <div class="col-md-12">
-                            <label>Role :</label>
+                            <label class="form-label">Role</label>
                             <select name="role" class="form-control @if($errors->has('role')) is-invalid @endif">
                                 <option value="" selected disabled hidden>
                                     Select role

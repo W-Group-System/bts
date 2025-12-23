@@ -30,4 +30,8 @@ class Corrective extends Model
     {
         return $this->hasMany(CorrectiveAttachment::class);
     }
+    public function comment()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

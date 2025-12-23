@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Building;
+use App\Comment;
 use App\Corrective;
 use App\CorrectiveAttachment;
 use App\CorrectiveBoard;
@@ -98,7 +99,7 @@ class CorrectiveController extends Controller
     public function show($id)
     {
         // dd($id);
-        $corrective = Corrective::with('building','createdBy','assignTo','assignBy','correctiveBoard','correctiveAttachment')->findOrFail($id);
+        $corrective = Corrective::with('building','createdBy','assignTo','assignBy','correctiveBoard','correctiveAttachment','comment')->findOrFail($id);
 
         return view('corrective.details',
             array(
@@ -176,6 +177,50 @@ class CorrectiveController extends Controller
         $corrective = Corrective::findOrFail($request->id);
         $corrective->corrective_board_id = $correctiveBoard->id;
         $corrective->save();
+
+        toastr()->success('Successfully Saved');
+        return back();
+    }
+
+    public function comment(Request $request,$id)
+    {
+        // dd($request->all(),$id);
+        $this->validate($request,[
+            'comment' => 'required'
+        ]);
+
+        $comments = new Comment;
+        $comments->comment = $request->comment;
+        $comments->user_id = auth()->id();
+        $comments->corrective_id = $id;
+        $comments->save();
+
+        toastr()->success('Successfully Saved');
+        return back();
+    }
+
+    public function attachComment(Request $request,$id)
+    {
+        // dd($request->all(),$id);
+        $this->validate($request,[
+            'attachments' => 'required'
+        ]);
+
+        $attachments = $request->file('attachments');
+        foreach($attachments as $attachment)
+        {
+            $extension = $attachment->getClientOriginalExtension();
+            $name = time()."_".$attachment->getClientOriginalName();
+            $attachment->move(public_path('comment_attachments'),$name);
+            $file_attachment = "/comment_attachments/".$name;
+
+            $comments = new Comment;
+            $comments->attachment = $file_attachment;
+            $comments->user_id = auth()->id();
+            $comments->corrective_id = $id;
+            $comments->attachment_type = $extension;
+            $comments->save();
+        }
 
         toastr()->success('Successfully Saved');
         return back();
