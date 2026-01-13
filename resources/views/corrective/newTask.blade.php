@@ -19,42 +19,51 @@
                             <input type="text" name="created_by" class="form-control" id="name" value="{{ auth()->user()->name }}" disabled>
                         </div>
                         <div class="col-xl-6">
-                            <label for="viberNumber" class="form-label">Viber Number</label>
-                            <input type="tel" name="viber_number" class="form-control @if($errors->has('viber_number')) is-invalid @endif" id="viberNumber" value="{{ old('viber_number') }}">
-                            @if($errors->has('viber_number'))
-                                <span class="invalid-feedback">{{ $errors->first('viber_number') }}</span>
+                            <label for="typeOfIssues" class="form-label">Type of issues</label>
+                            <select name="type_of_issues" id="typeOfIssues" class="form-control @if($errors->has('type_of_issues')) is-invalid @endif">
+                                <option value="">Select type of issues</option>
+                            </select>
+                            @if($errors->has('type_of_issues'))
+                                <span class="invalid-feedback">{{ $errors->first('type_of_issues') }}</span>
                             @endif
                         </div>
                         <div class="col-xl-6">
-                            <label for="task-name" class="form-label">Title</label>
-                            <input type="text" name="title" class="form-control @if($errors->has('title')) is-invalid @endif" id="task-name" value="{{ old('title') }}">
-                            @if($errors->has('title'))
-                                <span class="invalid-feedback">{{ $errors->first('title') }}</span>
-                            @endif
-                        </div>
-                        <div class="col-xl-6">
-                            <label class="form-label">Due Date</label>
-                            <input type="date" name="due_date" class="form-control @if($errors->has('due_date')) is-invalid @endif" value="{{ old('due_date') }}">
-                            @if($errors->has('due_date'))
-                                <span class="invalid-feedback">{{ $errors->first('due_date') }}</span>
-                            @endif
-                        </div>
-                        <div class="col-xl-6">
-                            <label class="form-label">Assign building</label>
-                            <select class="form-control" data-trigger name="building">
+                            <label for="task-name" class="form-label">Affected Locations</label>
+                            <select class="form-control @if($errors->has('affected_locations')) is-invalid @endif" name="affected_locations">
                                 <option value="">Select building</option>
                                 @foreach ($buildings as $building)
-                                    <option value="{{ $building->id }}" @if(old('building') == $building->id) selected @endif>{{ $building->code }}</option>
+                                    <option value="{{ $building->id }}" @if(old('affected_locations') == $building->id) selected @endif>{{ $building->code }}</option>
                                 @endforeach
                             </select>
+                            @if($errors->has('affected_locations'))
+                                <span class="invalid-feedback">{{ $errors->first('affected_locations') }}</span>
+                            @endif
+                        </div>
+                        <div class="col-xl-6">
+                            <label class="form-label">Quantity <span style="font-style: italic;">(if applicable)</span></label>
+                            <input type="number" name="quantity" class="form-control @if($errors->has('quantity')) is-invalid @endif" value="{{ old('quantity') }}">
+                            @if($errors->has('quantity'))
+                                <span class="invalid-feedback">{{ $errors->first('quantity') }}</span>
+                            @endif
+                        </div>
+                        <div class="col-xl-6">
+                            <label class="form-label">Date & Time identified</label>
+                            <input type="datetime-local" name="time_identified" class="form-control @if($errors->has('time_identified')) is-invalid @endif">
+                            @if($errors->has('time_identified'))
+                                <span class="invalid-feedback">{{ $errors->first('time_identified') }}</span>
+                            @endif
                         </div>
                         <div class="col-xl-6">
                             <label class="form-label">Priority</label>
-                            <select class="form-control @if($errors->has('due_date')) is-invalid @endif" data-trigger name="priority" id="choices-single-default1">
+                            <select class="form-control @if($errors->has('priority')) is-invalid @endif" data-trigger name="priority" id="choices-single-default1">
                                 <option value="High" @if(old('priority') == "High") selected @endif>High</option>
                                 <option value="Medium" @if(old('priority') == "Medium") selected @endif>Medium</option>
                                 <option value="Low" @if(old('priority') == "Low") selected @endif>Low</option>
+                                <option value="Project" @if(old('priority') == "Project") selected @endif>Project</option>
                             </select>
+                            @if($errors->has('priority'))
+                                <span class="invalid-feedback">{{ $errors->first('priority') }}</span>
+                            @endif
                         </div>
                         <div class="col-xl-12">
                             <label class="form-label">Attachments</label>

@@ -85,13 +85,13 @@
                 <span class="d-block fw-semibold fs-15">{{ strtoupper($board->name) }} - {{
                     count(($board->corrective)->where('corrective_board_id',
                     $board->id)->where('status','!=','Cancelled')) }}</span>
-                <div>
+                {{-- <div>
                     <a aria-label="anchor" href="javascript:void(0)"
                         class="btn btn-sm bg-white text-default border-0 btn-wave" data-bs-toggle="modal"
                         data-bs-target="#add-task">
                         <i class="ri-add-line align-middle me-1 fw-semibold"></i>Add Task
                     </a>
-                </div>
+                </div> --}}
             </div>
         </div>
         <div class="kanban-tasks" id="{{ $board->name }}-tasks" >

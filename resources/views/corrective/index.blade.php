@@ -40,7 +40,7 @@
                         data-bs-target="#create-task"><i class="ri-add-line fw-semibold align-middle me-1"></i> Create
                         Task</button>
                     @include('corrective.newTask')
-                    <div class="dropdown ms-2">
+                    {{-- <div class="dropdown ms-2">
                         <button class="btn btn-icon btn-secondary-light btn-sm btn-wave waves-light" type="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="ti ti-dots-vertical"></i>
@@ -51,7 +51,7 @@
                             <li><a class="dropdown-item" href="#">Completed Tasks</a></li>
                             <li><a class="dropdown-item" href="#">Inprogress Tasks</a></li>
                         </ul>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <div class="card-body">
@@ -61,9 +61,10 @@
                             <tr>
                                 <th scope="col">Task ID</th>
                                 <th scope="col">Task</th>
-                                <th scope="col">Assigned Date</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Due Date</th>
+                                <th scope="col">Type of issues</th>
+                                <th scope="col">Affected location</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Date & Time Identified</th>
                                 <th scope="col">Priority</th>
                                 <th scope="col">Assigned To</th>
                                 <th scope="col">Ticket By</th>
@@ -71,7 +72,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($corrective as $c)
+                            {{-- @foreach ($corrective as $c)
                                 <tr class="task-list">
                                     <td>
                                         @php
@@ -113,21 +114,6 @@
                                         @endif
                                     </td>
                                     <td>
-                                        {{-- <div class="avatar-list-stacked">
-                                            <span class="avatar avatar-sm avatar-rounded">
-                                                <img src="../assets/images/faces/2.jpg" alt="img">
-                                            </span>
-                                            <span class="avatar avatar-sm avatar-rounded">
-                                                <img src="../assets/images/faces/8.jpg" alt="img">
-                                            </span>
-                                            <span class="avatar avatar-sm avatar-rounded">
-                                                <img src="../assets/images/faces/2.jpg" alt="img">
-                                            </span>
-                                            <a class="avatar avatar-sm bg-primary avatar-rounded text-fixed-white"
-                                                href="javascript:void(0);">
-                                                +2
-                                            </a>
-                                        </div> --}}
                                         @if($c->assignTo)
                                             {{ $c->assignTo->name }}
                                         @endif
@@ -154,7 +140,7 @@
                                 </tr>
 
                                 @include('corrective.edit')
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>

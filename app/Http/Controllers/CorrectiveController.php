@@ -48,13 +48,13 @@ class CorrectiveController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $this->validate($request,[
-            'viber_number' => 'max:11|required',
-            'title' => 'required',
-            'due_date' => 'required',
-            'priority' => 'required|in:Low,Medium,High',
+            'type_of_issues' => 'required',
+            'affected_locations' => 'required',
+            'quantity' => 'required|number',
+            'time_identified' => 'required',
             'task' => 'required',
+            'priority' => 'required',
             'attachments' => 'required'
         ]);
 
