@@ -136,14 +136,12 @@
 
 @section('js')
 <script>
-    const choicesConfig = {
-        allowHTML: true,
-        searchEnabled: true,
-        removeItemButton: true
-    };
-
-    document.querySelectorAll('.choices-single').forEach(el => {
-        new Choices(el, choicesConfig);
-    });
+    $(document).ready(function() {
+        $('.modal').on('shown.bs.modal', function() {
+            $(this).find('.select2').select2({
+                dropdownParent: $(this)
+            })
+        })
+    })
 </script>
 @endsection

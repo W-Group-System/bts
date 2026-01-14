@@ -10,7 +10,7 @@
                     <div class="row gy-2">
                         <div class="col-md-12">
                             <label class="form-label">Building</label>
-                            <select name="building" class="form-control @if($errors->has('building')) is-invalid @endif">
+                            <select name="building" class="form-control select2 @if($errors->has('building')) is-invalid @endif">
                                 <option value="" selected disabled hidden>Select building</option>
                                 @foreach ($buildings as $building)
                                     <option value="{{ $building->id }}" @if(old('building') == $building->id) selected @endif>{{ $building->code.' - '.$building->name }}</option>
@@ -36,7 +36,7 @@
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">Role</label>
-                            <select name="role" class="form-control @if($errors->has('role')) is-invalid @endif">
+                            <select name="role" class="form-control select2 @if($errors->has('role')) is-invalid @endif">
                                 <option value="" selected disabled hidden>
                                     Select role
                                 </option>
