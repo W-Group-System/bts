@@ -72,4 +72,11 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/store','CorrectiveBoardController@store');
         Route::get('/show/{id}','CorrectiveBoardController@show');
     });
+
+    // Issues
+    Route::get('/categories','CategoryController@index');
+    Route::prefix('categories')->group(function() {
+        Route::post('/store', 'CategoryController@store');
+        Route::post('/update/{id}', 'CategoryController@update');
+    });
 });
