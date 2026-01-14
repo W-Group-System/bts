@@ -157,24 +157,31 @@
                         <!-- End::slide__category -->
 
                         <!-- Start::slide -->
+                        @can('Corrective')
                         <li class="slide">
                             <a href="{{ url('corrective') }}" class="side-menu__item">
                                 <i class="ri-article-line side-menu__icon"></i>
                                 <span class="side-menu__label">Corrective</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('Corrective Board')
                         <li class="slide">
                             <a href="{{ url('corrective-board') }}" class="side-menu__item">
                                 <i class="bi bi-clipboard2 side-menu__icon"></i>
                                 <span class="side-menu__label">Corrective Board</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('Reports')
                         <li class="slide">
                             <a href="{{ url('') }}" class="side-menu__item">
                                 <i class="bx bx-file side-menu__icon"></i>
                                 <span class="side-menu__label">Reports</span>
                             </a>
                         </li>
+                        @endcan
+                        {{-- @endif --}}
                         <!-- End::slide -->
 
                         <!-- Start::slide -->
@@ -185,18 +192,26 @@
                                 <i class="fe fe-chevron-right side-menu__angle"></i>
                             </a>
                             <ul class="slide-menu child1">
+                                @can('Building')
                                 <li class="slide">
                                     <a href="{{ url('building') }}" class="side-menu__item">Building</a>
                                 </li>
+                                @endcan
+                                @can('Roles')
                                 <li class="slide">
                                     <a href="{{ url('roles') }}" class="side-menu__item">Roles</a>
                                 </li>
+                                @endcan
+                                @can('User')
                                 <li class="slide">
                                     <a href="{{ url('users') }}" class="side-menu__item">User</a>
                                 </li>
+                                @endcan
+                                @can('Category')
                                 <li class="slide">
                                     <a href="{{ url('categories') }}" class="side-menu__item">Category</a>
                                 </li>
+                                @endcan
                             </ul>
                         </li>
                         <!-- End::slide -->

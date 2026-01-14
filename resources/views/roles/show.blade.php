@@ -24,10 +24,13 @@
 
                 <div class="card-body">
                     {{-- @dd($role->permissions) --}}
+                    @php
+                        $permissions_array = $role->permissions->pluck('name')->toArray();
+                    @endphp
                     @if(count($role->permissions) > 0)
                         @foreach ($permissions as $permission)
                             <div class="form-check">
-                                <input class="form-check-input" name="permission[]" value="{{ $permission->name }}" type="checkbox" id="{{ $permission->id }}" >
+                                <input class="form-check-input" name="permission[]" value="{{ $permission->name }}" type="checkbox" id="{{ $permission->id }}" @if(in_array($permission->name, $permissions_array)) checked @endif>
                                 <label class="form-check-label" for="{{ $permission->id }}">
                                     {{ $permission->name }}
                                 </label>
