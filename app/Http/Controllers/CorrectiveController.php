@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Building;
+use App\Category;
 use App\Comment;
 use App\Corrective;
 use App\CorrectiveAttachment;
@@ -19,13 +20,15 @@ class CorrectiveController extends Controller
      */
     public function index()
     {
-        $corrective = Corrective::with('assignTo','building','createdBy')->get();
+        $corrective = Corrective::with('assignTo','building','createdBy','category')->get();
         $buildings = Building::where('status','Active')->get();
+        $categories = Category::with('subcategory')->where('status','Active')->get();
         
         return view('corrective.index',
             array(
                 'corrective' => $corrective,
-                'buildings' => $buildings
+                'buildings' => $buildings,
+                'categories' => $categories
             )
         );
     }
@@ -48,25 +51,43 @@ class CorrectiveController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $this->validate($request,[
             'type_of_issues' => 'required',
             'affected_locations' => 'required',
-            'quantity' => 'required|number',
             'time_identified' => 'required',
             'task' => 'required',
             'priority' => 'required',
-            'attachments' => 'required'
+            'attachments' => 'required',
         ]);
 
+        $corrective = Corrective::with('category')->where('building_id', $request->affected_locations)
+                                    ->orderBy('id','DESC')
+                                    ->first();
+        $building = Building::findOrFail($request->affected_locations);
+        if(empty($corrective)) {
+            $series_number = $building->code.'-'.date('Y').'-'.str_pad('1',5,'0',STR_PAD_LEFT);
+        }
+        else {
+            $latestSeriesNumber = explode('-',$corrective->series_number);
+            $nextNumber = (int)$latestSeriesNumber[2]+1;
+            $series_number = $building->code.'-'.date('Y').'-'.str_pad($nextNumber,5,'0',STR_PAD_LEFT);
+        }
+
         $corrective = new Corrective;
-        $corrective->viber_number = $request->viber_number;
-        $corrective->title = $request->title;
-        $corrective->due_date = $request->due_date;
+        $corrective->category_id = $request->type_of_issues;
+        $corrective->subcategory_id = $request->subtype_issues;
+        $corrective->description = $request->description;
+        $corrective->series_number = $series_number;
+        $corrective->building_id = $request->affected_locations;
+        if($request->quantity) {
+            $corrective->quantity = $request->quantity;
+        }
+        $corrective->time_identified = $request->time_identified;
         $corrective->priority = $request->priority;
         $corrective->task = $request->task;
         $corrective->created_by = auth()->user()->id;
-        $corrective->status = "New";
-        $corrective->building_id = $request->building;
+        $corrective->status = "Todo";
         $corrective->corrective_board_id = 1;
         $corrective->save();
 
@@ -247,5 +268,26 @@ class CorrectiveController extends Controller
 
         toastr()->success('Successfully Assigned');
         return back();
+    }
+
+    public function refreshCorrective(Request $request)
+    {
+        // dd($request->all());
+        $category = Category::with('subcategory')->findOrFail($request->category);
+        $haveQty = false;
+        $options = "<option value=''></option>";
+        $haveOptions = false;
+        if ($category->have_qty == 1) {
+            $haveQty = true;
+        }
+
+        if (count($category->subcategory) > 0) {
+            $haveOptions = true;
+            foreach($category->subcategory as $subcategory) {
+                $options.= "<option value=".$subcategory->id.">".$subcategory->subcategory."</option>";
+            }
+        }
+
+        return response()->json(['status'=>'success','data' => $haveQty, 'options' => $options, 'haveOptions' => $haveOptions]);
     }
 }

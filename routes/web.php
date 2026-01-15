@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/comments/{id}','CorrectiveController@comment');
         Route::post('/attach-comments/{id}','CorrectiveController@attachComment');
         Route::post('/assign/{id}','CorrectiveController@assign');
+        Route::post('/refresh-corrective','CorrectiveController@refreshCorrective');
     });
 
     // Corrective Board

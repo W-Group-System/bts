@@ -35,11 +35,8 @@
                 @include('corrective.assign')
             </div>
             <div class="card-body">
-                <h5 class="fw-semibold mb-4 task-title">
-                    {{ $corrective->title }}
-                </h5>
                 <div class="fs-15 fw-semibold mb-2">Task Description :</div>
-                <p class="text-muted task-description">{!! $corrective->task  !!}/p>
+                <p class="text-muted task-description">{!! $corrective->task !!}</p>
                 {{-- <div class="fs-15 fw-semibold mb-2">Key tasks :</div>
                 <div>
                     <ul class="task-details-key-tasks mb-0">
@@ -75,7 +72,7 @@
                     <div>
                         <span class="d-block text-muted fs-12">Assigned Date</span>
                         @if($corrective->date_assign)
-                        <span class="d-block fs-14 fw-semibold">{{ date('d, M Y', strtotime($corrective->date_assign)) }}</span>
+                        <span class="d-block fs-14 fw-semibold">0000-00-00</span>
                         @else
                         <span class="d-block fs-14 fw-semibold">No assign date</span>
                         @endif
@@ -126,42 +123,46 @@
             </div>
             <div class="card-body">
                 <ul class="list-unstyled profile-timeline">
-                    @foreach ($corrective->comment as $comment)
-                        <li>
-                            <div>
-                                <span
-                                    class="avatar avatar-sm bg-primary-transparent avatar-rounded profile-timeline-avatar">
-                                    @php
-                                        $name = auth()->user()->name;
-                                        $first_letter = substr($name, 0,1);
-                                    @endphp
-                                    {{ strtoupper($first_letter) }}
-                                </span>
-                                <p class="mb-2">
-                                    <b>{{ auth()->user()->name }}</b><a class="text-secondary"
-                                        href="javascript:void(0);"></a><span
-                                        class="float-end fs-11 text-muted">{{ $comment->created_at->diffForHumans() }}</span>
-                                </p>
-                                <p class="text-muted mb-0">
-                                    @if($comment->attachment)
-                                        @if($comment->attachment_type == "pdf")
-                                        <a href="{{ url($comment->attachment) }}" target="_blank">
-                                            <i class="bi bi-file-earmark-pdf"></i>
-                                            Attachment
-                                        </a>
-                                        @else 
-                                        {{-- <a href="{{ url($comment->attachment) }}" target="_blank">
-                                            <i class="bi bi-file-image"></i>
-                                        </a> --}}
-                                        <img src="{{ url($comment->attachment) }}" alt="" class="img-thumbnail">
+                    @if(count($corrective->comment) > 0)
+                        @foreach ($corrective->comment as $comment)
+                            <li>
+                                <div>
+                                    <span
+                                        class="avatar avatar-sm bg-primary-transparent avatar-rounded profile-timeline-avatar">
+                                        @php
+                                            $name = auth()->user()->name;
+                                            $first_letter = substr($name, 0,1);
+                                        @endphp
+                                        {{ strtoupper($first_letter) }}
+                                    </span>
+                                    <p class="mb-2">
+                                        <b>{{ auth()->user()->name }}</b><a class="text-secondary"
+                                            href="javascript:void(0);"></a><span
+                                            class="float-end fs-11 text-muted">{{ $comment->created_at->diffForHumans() }}</span>
+                                    </p>
+                                    <p class="text-muted mb-0">
+                                        @if($comment->attachment)
+                                            @if($comment->attachment_type == "pdf")
+                                            <a href="{{ url($comment->attachment) }}" target="_blank">
+                                                <i class="bi bi-file-earmark-pdf"></i>
+                                                Attachment
+                                            </a>
+                                            @else 
+                                            {{-- <a href="{{ url($comment->attachment) }}" target="_blank">
+                                                <i class="bi bi-file-image"></i>
+                                            </a> --}}
+                                            <img src="{{ url($comment->attachment) }}" alt="" class="img-thumbnail">
+                                            @endif
+                                        @else
+                                        {{ $comment->comment }}
                                         @endif
-                                    @else
-                                    {{ $comment->comment }}
-                                    @endif
-                                </p>
-                            </div>
-                        </li>
-                    @endforeach
+                                    </p>
+                                </div>
+                            </li>
+                        @endforeach
+                    @else 
+                        <p class="text-muted fw-semibold" style="font-style: italic;">No comment...</p>   
+                    @endif
                 </ul>
             </div>
             <div class="card-footer">
@@ -205,7 +206,7 @@
                         <tbody>
                             <tr>
                                 <td><span class="fw-semibold">Task ID :</span></td>
-                                <td>{{ $corrective->building->code }}-{{ str_pad($corrective->id,3,"0",STR_PAD_LEFT) }}</td>
+                                <td>{{ $corrective->series_number }}</td>
                             </tr>
                             {{-- <tr>
                                 <td><span class="fw-semibold">Task Tags :</span></td>
@@ -218,7 +219,13 @@
                             <tr>
                                 <td><span class="fw-semibold">Date Created :</span></td>
                                 <td>
-                                    {{ date('M d Y', strtotime($corrective->created_at)) }}
+                                    {{ date('M d, Y', strtotime($corrective->created_at)) }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-semibold">Created by :</span></td>
+                                <td>
+                                    {{ $corrective->createdBy->name }}
                                 </td>
                             </tr>
                             <tr>
@@ -247,25 +254,19 @@
                                     @else
                                     <span class="fw-semibold">No assign personnel</span>
                                     @endif
-                                    {{-- <div class="avatar-list-stacked">
-                                        <span class="avatar avatar-sm avatar-rounded" data-bs-toggle="tooltip"
-                                            data-bs-custom-class="tooltip-primary" data-bs-original-title="Simon">
-                                            <img src="../assets/images/faces/2.jpg" alt="img">
-                                        </span>
-                                        <span class="avatar avatar-sm avatar-rounded" data-bs-toggle="tooltip"
-                                            data-bs-custom-class="tooltip-primary" data-bs-original-title="Sasha">
-                                            <img src="../assets/images/faces/8.jpg" alt="img">
-                                        </span>
-                                        <span class="avatar avatar-sm avatar-rounded" data-bs-toggle="tooltip"
-                                            data-bs-custom-class="tooltip-primary" data-bs-original-title="Anagha">
-                                            <img src="../assets/images/faces/2.jpg" alt="img">
-                                        </span>
-                                        <span class="avatar avatar-sm avatar-rounded" data-bs-toggle="tooltip"
-                                            data-bs-custom-class="tooltip-primary" data-bs-original-title="Hishen">
-                                            <img src="../assets/images/faces/10.jpg" alt="img">
-                                        </span>
-                                    </div> --}}
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-semibold">Category :</span></td>
+                                <td><span class="fw-semibold">{{ $corrective->category->category }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-semibold">Subcategory :</span></td>
+                                <td><span class="fw-semibold">{{ optional($corrective->subcategory)->subcategory }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-semibold">Description :</span></td>
+                                <td><span class="fw-semibold">{{ $corrective->description }}</span></td>
                             </tr>
                         </tbody>
                     </table>

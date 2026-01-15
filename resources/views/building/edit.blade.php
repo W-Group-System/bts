@@ -7,16 +7,16 @@
             <form method="POST" action="{{ url('/building/update/'.$building->id) }}">
                 @csrf
                 <div class="modal-body">
-                    <div class="row">
+                    <div class="row gy-2">
                         <div class="col-md-12">
-                            <label>Code :</label>
+                            <label class="form-label">Code :</label>
                             <input type="text" name="code" class="form-control form-control-sm @if($errors->has('code')) is-invalid @endif" value="{{ $building->code }}" >
                             @if($errors->has('code'))
                             <span class="invalid-feedback">{{ $errors->first('code') }}</span>
                             @endif
                         </div>
                         <div class="col-md-12">
-                            <label>Name :</label>
+                            <label class="form-label">Name :</label>
                             <input type="text" name="name" class="form-control form-control-sm @if($errors->has('name')) is-invalid @endif" value="{{ $building->name }}">
                             @if($errors->has('name'))
                             <span class="invalid-feedback">{{ $errors->first('name') }}</span>

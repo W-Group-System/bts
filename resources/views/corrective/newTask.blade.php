@@ -20,17 +20,36 @@
                         </div>
                         <div class="col-xl-6">
                             <label for="typeOfIssues" class="form-label">Type of issues</label>
-                            <select name="type_of_issues" id="typeOfIssues" class="form-control @if($errors->has('type_of_issues')) is-invalid @endif">
-                                <option value="">Select type of issues</option>
+                            <select data-placeholder="Select type of issues" name="type_of_issues" id="typeOfIssues" class="form-control select2 @if($errors->has('type_of_issues')) is-invalid @endif">
+                                <option value=""></option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" @if(old('type_of_issues') == $category->id) selected @endif>{{ $category->category }}</option>
+                                @endforeach
                             </select>
                             @if($errors->has('type_of_issues'))
                                 <span class="invalid-feedback">{{ $errors->first('type_of_issues') }}</span>
                             @endif
                         </div>
+                        <div class="col-xl-6" id="subtypeContainer" hidden>
+                            <label for="subTypeIssues" class="form-label">Subtype of issues</label>
+                            <select data-placeholder="Select type of issues" name="subtype_issues" id="subTypeIssues" class="form-control select2 @if($errors->has('subtype_issues')) is-invalid @endif">
+                                <option value=""></option>
+                            </select>
+                            @if($errors->has('subtype_issues'))
+                                <span class="invalid-feedback">{{ $errors->first('subtype_issues') }}</span>
+                            @endif
+                        </div>
+                        <div class="col-xl-6" id="descriptionContainer" hidden>
+                            <label for="" class="form-label @if($errors->has('description')) description @endif">Description</label>
+                            <textarea name="description" class="form-control" cols="30"></textarea>
+                            @if($errors->has('description'))
+                                <span class="invalid-feedback">{{ $errors->first('description') }}</span>
+                            @endif
+                        </div>
                         <div class="col-xl-6">
                             <label for="task-name" class="form-label">Affected Locations</label>
-                            <select class="form-control @if($errors->has('affected_locations')) is-invalid @endif" name="affected_locations">
-                                <option value="">Select building</option>
+                            <select data-placeholder="Select building" class="form-control select2 @if($errors->has('affected_locations')) is-invalid @endif" name="affected_locations">
+                                <option value=""></option>
                                 @foreach ($buildings as $building)
                                     <option value="{{ $building->id }}" @if(old('affected_locations') == $building->id) selected @endif>{{ $building->code }}</option>
                                 @endforeach
@@ -39,7 +58,7 @@
                                 <span class="invalid-feedback">{{ $errors->first('affected_locations') }}</span>
                             @endif
                         </div>
-                        <div class="col-xl-6">
+                        <div class="col-xl-6" id="qtyColumn" hidden>
                             <label class="form-label">Quantity <span style="font-style: italic;">(if applicable)</span></label>
                             <input type="number" name="quantity" class="form-control @if($errors->has('quantity')) is-invalid @endif" value="{{ old('quantity') }}">
                             @if($errors->has('quantity'))
@@ -48,14 +67,14 @@
                         </div>
                         <div class="col-xl-6">
                             <label class="form-label">Date & Time identified</label>
-                            <input type="datetime-local" name="time_identified" class="form-control @if($errors->has('time_identified')) is-invalid @endif">
+                            <input type="datetime-local" name="time_identified" value="{{ old('time_identified') }}" class="form-control @if($errors->has('time_identified')) is-invalid @endif">
                             @if($errors->has('time_identified'))
                                 <span class="invalid-feedback">{{ $errors->first('time_identified') }}</span>
                             @endif
                         </div>
                         <div class="col-xl-6">
                             <label class="form-label">Priority</label>
-                            <select class="form-control @if($errors->has('priority')) is-invalid @endif" data-trigger name="priority" id="choices-single-default1">
+                            <select data-placeholder="Select priority" class="form-control select2 @if($errors->has('priority')) is-invalid @endif" data-trigger name="priority" id="choices-single-default1">
                                 <option value="High" @if(old('priority') == "High") selected @endif>High</option>
                                 <option value="Medium" @if(old('priority') == "Medium") selected @endif>Medium</option>
                                 <option value="Low" @if(old('priority') == "Low") selected @endif>Low</option>
