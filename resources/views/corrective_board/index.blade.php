@@ -94,31 +94,38 @@
                 </div> --}}
             </div>
         </div>
-        <div class="kanban-tasks" id="{{ $board->name }}-tasks" >
-            <div id="{{ $board->name }}-tasks-draggable" data-view-btn="{{ $board->name }}-tasks" data-status="{{ $board->name }}">
-                @foreach ($board->corrective->where('status','!=','Cancelled') as $corrective)
+        <div class="kanban-tasks" id="{{ $board->js_id }}-tasks" >
+            <div id="{{ $board->js_id }}-tasks-draggable" data-view-btn="{{ $board->js_id }}-tasks" data-status="{{ $board->js_id }}">
+                @foreach ($board->corrective->where('status','!=','Cancelled')->where('building_id', auth()->user()->building_id) as $corrective)
                 <div class="card custom-card" data-id="{{ $corrective->id }}">
                     <div class="card-body p-0">
                         <div class="p-3 kanban-board-head">
                             <div class="d-flex text-muted justify-content-between mb-1 fs-12 fw-semibold">
-                                <div><i class="ri-time-line me-1 align-middle"></i>Created - {{ date('d M',
-                                    strtotime($corrective->created_at)) }}</div>
-                                @php
-                                $due_date = strtotime($corrective->due_date);
-                                $created = strtotime($corrective->created_at);
-                                $days_left = ($due_date-$created)/86400;
+                                <div>
+                                    <i class="ri-time-line me-1 align-middle"></i>Created - {{ date('d M', strtotime($corrective->created_at)) }}
+                                </div>
+                                {{-- @php
+                                    $due_date = strtotime($corrective->due_date);
+                                    $created = strtotime($corrective->created_at);
+                                    $days_left = ($due_date-$created)/86400;
                                 @endphp
                                 @if($days_left > 0)
                                 <div>{{ number_format($days_left) }} days left</div>
                                 @else
                                 <p class="badge bg-danger">Delayed</p>
-                                @endif
+                                @endif --}}
                             </div>
                             <div class="d-flex align-items-center justify-content-between">
-                                <div class="task-badges"><span class="badge bg-light text-default">#{{
-                                        $corrective->building->code."-".str_pad($corrective->id,3,"0",STR_PAD_LEFT)
-                                        }}</span><span class="ms-1 badge bg-primary-transparent">{{
-                                        $corrective->priority }}</span></div>
+                                <div class="task-badges">
+                                    {{-- <span class="badge bg-light text-default">#{{ $corrective->series_number }}</span> --}}
+                                    @if($corrective->priority == "High")
+                                    <span class="ms-1 badge bg-danger-transparent">{{ $corrective->priority }}</span>
+                                    @elseif($corrective->priority == "Medium")
+                                    <span class="ms-1 badge bg-warning-transparent">{{ $corrective->priority }}</span>
+                                    @elseif($corrective->priority == "Low")
+                                    <span class="ms-1 badge bg-info-transparent">{{ $corrective->priority }}</span>
+                                    @endif
+                                </div>
                                 <div class="dropdown">
                                     <a aria-label="anchor" href="javascript:void(0);"
                                         class="btn btn-icon btn-sm btn-light" data-bs-toggle="dropdown"
@@ -126,8 +133,11 @@
                                         <i class="fe fe-more-vertical"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="{{ url('/corrective/show/'.$corrective->id) }}"><i
-                                                    class="ri-eye-line me-1 align-middle d-inline-block"></i>View</a>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ url('/corrective/show/'.$corrective->id) }}">
+                                                <i class="ri-eye-line me-1 align-middle d-inline-block"></i>
+                                                View
+                                            </a>
                                         </li>
                                         {{-- <li><a class="dropdown-item" href="javascript:void(0);"><i
                                                     class="ri-delete-bin-line me-1 align-middle d-inline-block"></i>Delete</a>
@@ -139,7 +149,7 @@
                                 </div>
                             </div>
                             <div class="kanban-content mt-2">
-                                <h6 class="fw-semibold mb-1 fs-15">{{ $corrective->title }}</h6>
+                                <h6 class="fw-semibold mb-1 fs-15">{{ $corrective->series_number }}</h6>
                                 {{-- <div class="kanban-task-description">Lorem ipsum dolor sit amet consectetur
                                     adipisicing
                                     elit, Nulla soluta consectetur sit amet elit dolor sit amet.</div> --}}
@@ -159,9 +169,10 @@
                                             class="fw-semibold fs-12">0</span>
                                     </a>
                                 </div>
+                                @if($corrective->assign_to)
                                 <div class="avatar-list-stacked">
                                     <span class="avatar avatar-sm avatar-rounded">
-                                        <img src="{{ asset('image/user.png') }}" alt="img">
+                                        <img src="{{ asset('image/user.png') }}" alt="img" data-bs-toggle="tooltip" title="{{ $corrective->assignTo->name }}">
                                     </span>
                                     {{-- <span class="avatar avatar-sm avatar-rounded">
                                         <img src="../assets/images/faces/12.jpg" alt="img">
@@ -173,6 +184,7 @@
                                         <img src="../assets/images/faces/8.jpg" alt="img">
                                     </span> --}}
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -197,7 +209,13 @@
 <!-- Internal Task  JS -->
 {{-- <script src="{{ asset('assets/js/task-kanban-board.js') }}"></script> --}}
 <script>
-    const drake = dragula([document.querySelector('#todo-tasks-draggable'), document.querySelector('#inprogress-tasks-draggable'), document.querySelector('#inreview-tasks-draggable'), document.querySelector('#completed-tasks-draggable')]);
+    const drake = dragula([
+            document.querySelector('#todo-tasks-draggable'),
+            document.querySelector('#progress-tasks-draggable'),
+            document.querySelector('#review-tasks-draggable'),
+            document.querySelector('#verification-tasks-draggable'),
+            document.querySelector('#done-tasks-draggable')
+        ]);
     
     drake.on('drop', function(el, target, source, sibling) {
         const status = target.getAttribute('data-status')
@@ -217,19 +235,19 @@
         })
     })
 
-    // var myElement1 = document.getElementById('new-tasks');
-    // new SimpleBar(myElement1, { autoHide: true });
+    var myElement1 = document.getElementById('todo-tasks');
+    new SimpleBar(myElement1, { autoHide: true });
 
-    var myElement2 = document.getElementById('todo-tasks');
+    var myElement2 = document.getElementById('progress-tasks');
     new SimpleBar(myElement2, { autoHide: true });
 
-    var myElement3 = document.getElementById('inprogress-tasks');
+    var myElement3 = document.getElementById('review-tasks');
     new SimpleBar(myElement3, { autoHide: true });
 
-    var myElement4 = document.getElementById('inreview-tasks');
+    var myElement4 = document.getElementById('verification-tasks');
     new SimpleBar(myElement4, { autoHide: true });
 
-    var myElement5 = document.getElementById('completed-tasks');
+    var myElement5 = document.getElementById('done-tasks');
     new SimpleBar(myElement5, { autoHide: true });
 
 
@@ -238,9 +256,10 @@
             let i = [
                 // document.querySelector('#new-tasks-draggable'),
                 document.querySelector('#todo-tasks-draggable'),
-                document.querySelector('#inprogress-tasks-draggable'),
-                document.querySelector('#inreview-tasks-draggable'),
-                document.querySelector('#completed-tasks-draggable')
+                document.querySelector('#progress-tasks-draggable'),
+                document.querySelector('#review-tasks-draggable'),
+                document.querySelector('#verification-tasks-draggable'),
+                document.querySelector('#done-tasks-draggable')
             ]
             i.map((ele) => {
                 if (ele) {

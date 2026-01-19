@@ -154,7 +154,7 @@
                                             <img src="{{ url($comment->attachment) }}" alt="" class="img-thumbnail">
                                             @endif
                                         @else
-                                        {{ $comment->comment }}
+                                        <p class="fw-normal">{!! $comment->comment !!}</p>
                                         @endif
                                     </p>
                                 </div>

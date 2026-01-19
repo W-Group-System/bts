@@ -12,9 +12,9 @@
                     <div class="row gy-2">
                         <div class="col-md-12">
                             <label for="" class="form-label">Assign To</label>
-                            <select name="assignTo" class="form-select">
+                            <select name="assignTo" class="form-select select2">
                                 <option value="">Select user</option>
-                                @foreach ($users as $user)
+                                @foreach ($users->where('building_id', auth()->user()->building_id) as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>

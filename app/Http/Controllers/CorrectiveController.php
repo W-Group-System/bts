@@ -152,25 +152,25 @@ class CorrectiveController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
-            'viber_number' => 'max:11|required',
-            'title' => 'required',
-            'due_date' => 'required',
-            'priority' => 'required|in:Low,Medium,High',
-            'task' => 'required'
-        ]);
+        // $this->validate($request,[
+        //     'viber_number' => 'max:11|required',
+        //     'title' => 'required',
+        //     'due_date' => 'required',
+        //     'priority' => 'required|in:Low,Medium,High',
+        //     'task' => 'required'
+        // ]);
 
-        $corrective = Corrective::findOrFail($id);
-        $corrective->viber_number = $request->viber_number;
-        $corrective->title = $request->title;
-        $corrective->due_date = $request->due_date;
-        $corrective->priority = $request->priority;
-        $corrective->task = $request->task;
-        $corrective->building_id = $request->building;
-        $corrective->save();
+        // $corrective = Corrective::findOrFail($id);
+        // $corrective->viber_number = $request->viber_number;
+        // $corrective->title = $request->title;
+        // $corrective->due_date = $request->due_date;
+        // $corrective->priority = $request->priority;
+        // $corrective->task = $request->task;
+        // $corrective->building_id = $request->building;
+        // $corrective->save();
 
-        toastr()->success('Successfully Updated');
-        return back();
+        // toastr()->success('Successfully Updated');
+        // return back();
     }
 
     /**
@@ -265,6 +265,13 @@ class CorrectiveController extends Controller
         $corrective->assign_by = auth()->user()->id;
         $corrective->date_assign = date('Y-m-d');
         $corrective->save();
+
+        $user = User::findOrFail($request->assignTo);
+
+        $comment = new Comment;
+        $comment->comment = '<b>'.auth()->user()->name.'</b>'.' assign this to ' .'<b>'.$user->name.'</b>';
+        $comment->corrective_id = $id;
+        $comment->save();
 
         toastr()->success('Successfully Assigned');
         return back();
