@@ -22,6 +22,18 @@
                             <span class="invalid-feedback">{{ $errors->first('name') }}</span>
                             @endif
                         </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Building Admin :</label>
+                            <select name="building_admin" class="form-select @if($errors->has('building_admin')) @endif">
+                                <option value=""></option>
+                                @foreach ($buildingAdmin as $ba)
+                                    <option value="{{ $ba->id }}">{{ $ba->name }}</option>
+                                @endforeach
+                            </select>
+                            @if($errors->has('building_admin'))
+                            <span class="invalid-feedback">{{ $errors->first('building_admin') }}</span>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

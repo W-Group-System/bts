@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Building;
+use App\User;
 use Illuminate\Http\Request;
 
 class BuildingController extends Controller
@@ -14,11 +15,13 @@ class BuildingController extends Controller
      */
     public function index()
     {
-        $buildings = Building::get();
+        $buildings = Building::with('user')->get();
+        $buildingAdmin = User::where('status','Active')->get();
 
         return view('building.index',
             array(
-                'buildings' => $buildings
+                'buildings' => $buildings,
+                'buildingAdmin' => $buildingAdmin
             )
         );
     }
@@ -44,7 +47,8 @@ class BuildingController extends Controller
         // dd($request->all());
         $this->validate($request, [
             'code' => 'required|max:10|unique:buildings,code',
-            'name' => 'required'
+            'name' => 'required',
+            'building_admin' => 'required|exists:users,id'
         ]);
 
         $building = new Building;
@@ -90,12 +94,14 @@ class BuildingController extends Controller
     {
         $this->validate($request, [
             'code' => 'required|max:10|unique:buildings,code,'.$id,
-            'name' => 'required'
+            'name' => 'required',
+            'building_admin' => 'required|exists:users,id'
         ]);
 
         $building = Building::findOrFail($id);
         $building->code = $request->code;
         $building->name = $request->name;
+        $building->user_id = $request->building_admin;
         $building->save();
 
         toastr()->success('Successfully Updated');

@@ -62,6 +62,7 @@
                                 <td>Action</td>
                                 <td>Code</td>
                                 <td>Name</td>
+                                <th>Building Admin</th>
                                 <td>Status</td>
                             </tr>
                         </thead>
@@ -91,6 +92,7 @@
                                     </td>
                                     <td>{{ $building->code }}</td>
                                     <td>{{ $building->name }}</td>
+                                    <td>{{ $building->user->name }}</td>
                                     <td>
                                         @if($building->status == "Active")
                                         <span class="badge bg-success">
