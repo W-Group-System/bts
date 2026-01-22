@@ -3,6 +3,7 @@
 @section('css')
 <!-- Dragula -->
 <link rel="stylesheet" href="{{ asset('assets/libs/dragula/dragula.min.css') }}">
+<link rel="stylesheet" href="{{ asset('toast/jquery.toast.min.css') }}">
 @endsection
 
 @section('content')
@@ -206,6 +207,7 @@
 @section('js')
 <!-- Dragula JS -->
 <script src="{{ asset('assets/libs/dragula/dragula.min.js') }}"></script>
+<script src="{{ asset('toast/jquery.toast.min.js') }}"></script>
 <!-- Internal Task  JS -->
 {{-- <script src="{{ asset('assets/js/task-kanban-board.js') }}"></script> --}}
 <script>
@@ -213,7 +215,9 @@
             document.querySelector('#todo-tasks-draggable'),
             document.querySelector('#progress-tasks-draggable'),
             document.querySelector('#review-tasks-draggable'),
+            document.querySelector('#ba_return-tasks-draggable'),
             document.querySelector('#verification-tasks-draggable'),
+            document.querySelector('#sqa_return-tasks-draggable'),
             document.querySelector('#done-tasks-draggable')
         ]);
     
@@ -229,8 +233,22 @@
                 status: status,
                 id: dataId
             },
-            success:function(res){
-                location.reload()
+            success:function(response){
+                // location.reload()
+                if (response.status == "success") {
+                    $.toast({
+                        text: response.message,
+                        icon: response.status,
+                        position: "top-right"
+                    })
+                }
+                else {
+                    $.toast({
+                        text: response.message,
+                        icon: response.status,
+                        position: "top-right"
+                    })
+                }
             }
         })
     })
@@ -244,11 +262,17 @@
     var myElement3 = document.getElementById('review-tasks');
     new SimpleBar(myElement3, { autoHide: true });
 
-    var myElement4 = document.getElementById('verification-tasks');
+    var myElement4 = document.getElementById('ba_return-tasks');
     new SimpleBar(myElement4, { autoHide: true });
 
-    var myElement5 = document.getElementById('done-tasks');
+    var myElement5 = document.getElementById('verification-tasks');
     new SimpleBar(myElement5, { autoHide: true });
+
+    var myElement6 = document.getElementById('sqa_return-tasks');
+    new SimpleBar(myElement6, { autoHide: true });
+
+    var myElement7 = document.getElementById('done-tasks');
+    new SimpleBar(myElement7, { autoHide: true });
 
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -258,7 +282,9 @@
                 document.querySelector('#todo-tasks-draggable'),
                 document.querySelector('#progress-tasks-draggable'),
                 document.querySelector('#review-tasks-draggable'),
+                document.querySelector('#ba_return-tasks-draggable'),
                 document.querySelector('#verification-tasks-draggable'),
+                document.querySelector('#sqa_return-tasks-draggable'),
                 document.querySelector('#done-tasks-draggable')
             ]
             i.map((ele) => {

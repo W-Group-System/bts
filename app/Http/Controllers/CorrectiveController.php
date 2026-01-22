@@ -8,6 +8,7 @@ use App\Comment;
 use App\Corrective;
 use App\CorrectiveAttachment;
 use App\CorrectiveBoard;
+use App\CorrectiveBoardAccess;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -196,18 +197,38 @@ class CorrectiveController extends Controller
 
     public function updateStatus(Request $request)
     {
-        $correctiveBoard = CorrectiveBoard::where('name', $request->status)->first();
-        // dd($correctiveBoard);
+        // dd($request->all()); 
+        // dd(auth()->user()->getRoleNames());
+        $correctiveBoard = CorrectiveBoard::where('js_id', $request->status)->first();
         $corrective = Corrective::findOrFail($request->id);
         if ($corrective->assign_to == auth()->user()->id)
         {
             $corrective->corrective_board_id = $correctiveBoard->id;
             $corrective->save();
-            toastr()->success('Successfully Saved');
+
+            // $getBuildingAdmin = User::where('building_id', auth()->user()->building_id)->first();
+            // dd($getBuildingAdmin);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successfully Moved'
+            ]);
+            // $getUserRole = auth()->user()->getRoleNames()->first();
+            // $correctiveBoardAccess = CorrectiveBoardAccess::where('role', $getUserRole)->pluck('corrective_board_id')->toArray();
+            // if(in_array($correctiveBoard->id, $correctiveBoardAccess)) {
+            // }
+            // else {
+            //     return response()->json([
+            //         'status' => 'warning',
+            //         'message' => 'You cannot move this ticket because you do not have access in this column.'
+            //     ]);
+            // }
         }
-        else 
-        {
-            toastr()->error('You cannot move this ticket because it is not assigned to you.');
+        else  {
+            // toastr()->error('You cannot move this ticket because it is not assigned to you.');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You cannot move this ticket because it is not assigned to you'
+            ]);
         }
 
         return back();
