@@ -42,4 +42,8 @@ class Corrective extends Model
     {
         return $this->belongsTo(Subcategory::class);
     }
+    public function approvers()
+    {
+        return $this->hasMany(Approver::class);
+    }
 }

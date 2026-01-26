@@ -72,7 +72,7 @@
                     <div>
                         <span class="d-block text-muted fs-12">Assigned Date</span>
                         @if($corrective->date_assign)
-                        <span class="d-block fs-14 fw-semibold">0000-00-00</span>
+                        <span class="d-block fs-14 fw-semibold">{{ date('M d Y', strtotime($corrective->date_assign)) }}</span>
                         @else
                         <span class="d-block fs-14 fw-semibold">No assign date</span>
                         @endif
@@ -273,75 +273,33 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="card custom-card overflow-hidden">
+        <div class="card custom-card overflow-hidden">
             <div class="card-header justify-content-between">
-                <div class="card-title">Sub Tasks</div>
-                <div>
-                    <button class="btn btn-secondary-light btn-sm btn-wave"><i
-                            class="ri-add-line me-1 align-middle"></i>Sub Task</button>
-                </div>
+                <div class="card-title">Approvers</div>
             </div>
             <div class="card-body">
                 <ul class="list-group">
+                    @foreach ($corrective->approvers as $approver)
                     <li class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2"><input class="form-check-input form-checked-success" type="checkbox"
-                                    value="" id="successChecked1" checked=""></div>
-                            <div class="fw-semibold">Conduct Website Design Analysis</div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="fw-semibold">{{ $approver->user->name }}</div>
+                            <div class="me-2">
+                                @if($approver->status == "Pending")
+                                <div class="badge bg-warning">Pending</div>
+                                @elseif($approver->status == "Waiting")
+                                <div class="badge bg-info">Waiting</div>
+                                @elseif($approver->status == "Approved")
+                                <div class="badge bg-success">Approved</div>
+                                @elseif($approver->status == "Cancelled")
+                                <div class="badge bg-danger">Cancelled</div>
+                                @endif
+                            </div>
                         </div>
                     </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2"><input class="form-check-input form-checked-success" type="checkbox"
-                                    value="" id="successChecked2"></div>
-                            <div class="fw-semibold">Collaborate with UI/UX Team</div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2"><input class="form-check-input form-checked-success" type="checkbox"
-                                    value="" id="successChecked3"></div>
-                            <div class="fw-semibold">Refine Design Iteratively</div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2"><input class="form-check-input form-checked-success" type="checkbox"
-                                    value="" id="successChecked4"></div>
-                            <div class="fw-semibold">Implement Design Changes</div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2"><input class="form-check-input form-checked-success" type="checkbox"
-                                    value="" id="successChecked5" checked=""></div>
-                            <div class="fw-semibold">Test Responsive and Cross-Browser Compatibility</div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2"><input class="form-check-input form-checked-success" type="checkbox"
-                                    value="" id="successChecked6" checked=""></div>
-                            <div class="fw-semibold">Review and Polish Design Elements</div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2"><input class="form-check-input form-checked-success" type="checkbox"
-                                    value="" id="successChecked77" checked=""></div>
-                            <div class="fw-semibold">Incorporate Branding Elements</div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center">
-                            <div class="me-2"><input class="form-check-input form-checked-success" type="checkbox"
-                                    value="" id="successChecked7"></div>
-                            <div class="fw-semibold">Documentation and Handover</div>
-                        </div>
-                    </li>
+                    @endforeach
                 </ul>
             </div>
-        </div> --}}
+        </div>
         <div class="card custom-card overflow-hidden">
             <div class="card-header">
                 <div class="card-title">
