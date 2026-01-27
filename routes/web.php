@@ -56,11 +56,13 @@ Route::group(['middleware' => 'auth'], function() {
     // Corrective
     Route::get('corrective','CorrectiveController@index');
     Route::prefix('corrective')->group(function() {
+        Route::get('/show/{id}','CorrectiveController@show');
+        Route::get('/create', 'CorrectiveController@create');
+
         Route::post('/store', 'CorrectiveController@store');
         Route::post('/update/{id}', 'CorrectiveController@update');
         Route::post('/cancel/{id}', 'CorrectiveController@cancelled');
         Route::post('/update-status','CorrectiveController@updateStatus');
-        Route::get('/show/{id}','CorrectiveController@show');
         Route::post('/comments/{id}','CorrectiveController@comment');
         Route::post('/attach-comments/{id}','CorrectiveController@attachComment');
         Route::post('/assign/{id}','CorrectiveController@assign');

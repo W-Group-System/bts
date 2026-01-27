@@ -79,9 +79,10 @@
                     Total Tasks
                 </div>
                 <div class="d-flex">
-                    <button class="btn btn-sm btn-primary btn-wave waves-light" data-bs-toggle="modal"
-                        data-bs-target="#create-task"><i class="ri-add-line fw-semibold align-middle me-1"></i> Create
-                        Task</button>
+                    <a href="{{ url('/corrective/create') }}" class="btn btn-sm btn-primary btn-wave waves-light">
+                        <i class="ri-add-line fw-semibold align-middle me-1"></i> 
+                        Create Task
+                    </a>
                     {{-- <div class="dropdown ms-2">
                         <button class="btn btn-icon btn-secondary-light btn-sm btn-wave waves-light" type="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -151,7 +152,7 @@
     </div>
 </div>
 <!--End::row-1 -->
-@include('corrective.newTask')
+{{-- @include('corrective.newTask') --}}
 @endsection
 
 @section('js')

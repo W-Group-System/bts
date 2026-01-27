@@ -23,14 +23,14 @@ class CorrectiveController extends Controller
     public function index()
     {
         $corrective = Corrective::with('assignTo','building','createdBy','category')->get();
-        $buildings = Building::where('status','Active')->get();
-        $categories = Category::with('subcategory')->where('status','Active')->get();
+        // $buildings = Building::where('status','Active')->get();
+        // $categories = Category::with('subcategory')->where('status','Active')->get();
         
         return view('corrective.index',
             array(
                 'corrective' => $corrective,
-                'buildings' => $buildings,
-                'categories' => $categories
+                // 'buildings' => $buildings,
+                // 'categories' => $categories
             )
         );
     }
@@ -42,7 +42,15 @@ class CorrectiveController extends Controller
      */
     public function create()
     {
-        //
+        $buildings = Building::where('status','Active')->get();
+        $categories = Category::with('subcategory')->where('status','Active')->get();
+        
+        return view('corrective.newTask',
+            array(
+                'buildings' => $buildings,
+                'categories' => $categories
+            )
+        );
     }
 
     /**
@@ -111,7 +119,7 @@ class CorrectiveController extends Controller
         }
 
         toastr()->success('Successfully Saved');
-        return back();
+        return redirect('/corrective');
     }
 
     /**

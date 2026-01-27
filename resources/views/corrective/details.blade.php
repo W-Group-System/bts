@@ -25,11 +25,21 @@
     <div class="col-xl-9">
         <div class="card custom-card">
             <div class="card-header justify-content-between">
-                <div class="card-title">Task Summary</div>
+                <div class="d-flex flex-row align-items-center gap-4">
+                    <a href="{{ url('corrective') }}" class="btn btn-danger">
+                        <i class="ri-arrow-left-line"></i>
+                        Back
+                    </a>
+                    <h5 class="card-title">
+                        Task Summary
+                    </h5>
+                </div>
                 @if($corrective->corrective_board_id == 1)
                 <div class="btn-list">
-                    <button class="btn btn-success btn-sm btn-wave me-0" data-bs-toggle="modal" data-bs-target="#assignTask{{ $corrective->id }}"><i
-                            class="ri-edit-line me-1 align-middle" ></i>Assign Task</button>
+                    <button class="btn btn-success btn-sm btn-wave me-0" data-bs-toggle="modal" data-bs-target="#assignTask{{ $corrective->id }}">
+                        <i class="ri-edit-line me-1 align-middle" ></i>
+                        Assign Task
+                    </button>
                 </div>
                 @endif
                 @include('corrective.assign')
@@ -361,6 +371,12 @@
         FilePond.create(MultipleElement, {
             storeAsFile: true
         });
+
+        $('.modal').on('shown.bs.modal', function() {
+            $(this).find('.select2').select2({
+                dropdownParent: $(this)
+            })
+        })
     });
 </script>
 @endsection
