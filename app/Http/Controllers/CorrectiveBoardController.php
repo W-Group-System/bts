@@ -23,7 +23,8 @@ class CorrectiveBoardController extends Controller
         return view('corrective_board.index',
             array(
                 'corrective_board' => $corrective_board,
-                'access' => $access
+                'access' => $access,
+                'getRole' => $getRole
             )
         );
     }

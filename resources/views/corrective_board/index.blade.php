@@ -97,7 +97,6 @@
         </div>
         @php
             $accessData = $access->pluck('corrective_board_id')->toArray();
-            // dd($accessData);
         @endphp
         <div class="kanban-tasks" id="{{ $board->js_id }}-tasks">
             <div id="{{ $board->js_id }}-tasks-draggable" data-view-btn="{{ $board->js_id }}-tasks" data-status="{{ $board->js_id }}" data-correctiveid="{{ $board->id }}">
@@ -217,6 +216,7 @@
 <script>
     const accessArray =  {!! json_encode($accessData) !!};
     const currentUser = "<?php echo(auth()->id()) ?>"
+    const currentRole = "<?php echo($getRole) ?>"
     
     const drake = dragula([
             document.querySelector('#todo-tasks-draggable'),
@@ -237,8 +237,18 @@
                     return false
                 }
                 
-                if (accessArray.includes(Number(id)) && assign == currentUser) {
-                    return true
+                if (accessArray.includes(Number(id))) {
+                    const roleArray = ["Building Engineer","House Keeping", "Multi-Skilled Technician"]
+                    if (roleArray.includes(currentRole)) {
+                        if (currentUser == assign) {
+                            return true
+                        }
+                    } else {
+                        // if (fromStatus == "verification" && toStatus == "ba_return") {
+                        //     return false
+                        // }
+                        return true
+                    }
                 }
                 else {
                     return false
