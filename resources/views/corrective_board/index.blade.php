@@ -95,10 +95,14 @@
                 </div> --}}
             </div>
         </div>
-        <div class="kanban-tasks" id="{{ $board->js_id }}-tasks" >
-            <div id="{{ $board->js_id }}-tasks-draggable" data-view-btn="{{ $board->js_id }}-tasks" data-status="{{ $board->js_id }}">
+        @php
+            $accessData = $access->pluck('corrective_board_id')->toArray();
+            // dd($accessData);
+        @endphp
+        <div class="kanban-tasks" id="{{ $board->js_id }}-tasks">
+            <div id="{{ $board->js_id }}-tasks-draggable" data-view-btn="{{ $board->js_id }}-tasks" data-status="{{ $board->js_id }}" data-correctiveid="{{ $board->id }}">
                 @foreach ($board->corrective->where('status','!=','Cancelled')->where('building_id', auth()->user()->building_id) as $corrective)
-                <div class="card custom-card" data-id="{{ $corrective->id }}">
+                <div class="card custom-card" data-id="{{ $corrective->id }}" data-assign="{{ $corrective->assign_to }}">
                     <div class="card-body p-0">
                         <div class="p-3 kanban-board-head">
                             <div class="d-flex text-muted justify-content-between mb-1 fs-12 fw-semibold">
@@ -211,6 +215,9 @@
 <!-- Internal Task  JS -->
 {{-- <script src="{{ asset('assets/js/task-kanban-board.js') }}"></script> --}}
 <script>
+    const accessArray =  {!! json_encode($accessData) !!};
+    const currentUser = "<?php echo(auth()->id()) ?>"
+    
     const drake = dragula([
             document.querySelector('#todo-tasks-draggable'),
             document.querySelector('#progress-tasks-draggable'),
@@ -219,7 +226,27 @@
             document.querySelector('#verification-tasks-draggable'),
             document.querySelector('#sqa_return-tasks-draggable'),
             document.querySelector('#done-tasks-draggable')
-        ]);
+        ], {
+            accepts: function(el, target, source, sibling) {
+                const fromStatus = source.getAttribute("data-status")
+                const toStatus = target.getAttribute("data-status")
+                const id = target.getAttribute('data-correctiveid')
+                const assign = el.getAttribute('data-assign')
+                
+                if (fromStatus == "done") {
+                    return false
+                }
+                
+                if (accessArray.includes(Number(id)) && assign == currentUser) {
+                    return true
+                }
+                else {
+                    return false
+                }
+
+                return false
+            }
+        })
     
     drake.on('drop', function(el, target, source, sibling) {
         const status = target.getAttribute('data-status')

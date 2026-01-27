@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CorrectiveBoard;
+use App\CorrectiveBoardAccess;
 use Illuminate\Http\Request;
 
 class CorrectiveBoardController extends Controller
@@ -15,10 +16,14 @@ class CorrectiveBoardController extends Controller
     public function index()
     {
         $corrective_board = CorrectiveBoard::with('corrective')->get();
+
+        $getRole = auth()->user()->getRoleNames()->first();
+        $access = CorrectiveBoardAccess::where('role', $getRole)->get();
         
         return view('corrective_board.index',
             array(
-                'corrective_board' => $corrective_board
+                'corrective_board' => $corrective_board,
+                'access' => $access
             )
         );
     }
