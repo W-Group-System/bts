@@ -26,7 +26,7 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="d-flex flex-row align-items-center gap-4">
-                    <a href="{{ url('corrective') }}" class="btn btn-danger">
+                    <a href="{{ url('corrective') }}" class="btn btn-danger btn-sm">
                         <i class="ri-arrow-left-line"></i>
                         Back
                     </a>

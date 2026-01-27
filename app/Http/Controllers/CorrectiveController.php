@@ -200,108 +200,109 @@ class CorrectiveController extends Controller
         $corrective->status = "Cancelled";
         $corrective->save();
 
-        toastr()->success('Successfully Cancelled');
-        return back();
+        // toastr()->success('Successfully Cancelled');
+        // return back();
+        return response()->json(['status' => 'success'],200);
     }
 
     public function updateStatus(Request $request)
     {
         $correctiveBoard = CorrectiveBoard::where('js_id', $request->status)->first();
+        
         $corrective = Corrective::findOrFail($request->id);
-
         $corrective->corrective_board_id = $correctiveBoard->id;
         $corrective->save();
 
-        $getBuildingAdmin = Building::with('user')->where('id', auth()->user()->building_id)->first();
-        $requestor = $corrective->created_by;
-        $approvers = [
-            $getBuildingAdmin->user_id,
-            $requestor
-        ];
+        // $getBuildingAdmin = Building::with('user')->where('id', auth()->user()->building_id)->first();
+        // $requestor = $corrective->created_by;
+        // $approvers = [
+        //     $getBuildingAdmin->user_id,
+        //     $requestor
+        // ];
         
-        if($request->status == "todo" || $request->status == "progress" || $request->status == "ba_return" || $request->status == "sqa_return")
-        {
-            $correctiveApprovers = Approver::where('corrective_id', $corrective->id)->get();
-            if(count($correctiveApprovers) > 0)
-            {
-                foreach($correctiveApprovers as $key => $approver)
-                {
-                    $approver->status = "Waiting";
-                    $approver->start_date = null;
-                    $approver->save();
-                }
-            }
-        }
-        elseif ($request->status == "review")
-        {
-            $correctiveApprovers = Approver::where('corrective_id', $corrective->id)->get();
-            if(count($correctiveApprovers) == 0)
-            {
-                foreach($approvers as $key => $approver)
-                {
-                    $btsApprover = new Approver;
-                    $btsApprover->user_id = $approver;
-                    $btsApprover->level = $key+1;
-                    $btsApprover->corrective_id =  $corrective->id;
-                    if($key == 0) 
-                    {
-                        $btsApprover->status = "Pending";
-                        $btsApprover->start_date = date('Y-m-d');
-                    }
-                    else 
-                    {
-                        $btsApprover->status = "Waiting";
-                    }
-                    $btsApprover->save();
-                }
-            }
-            else 
-            {
-                $correctiveApprovers = Approver::where('corrective_id', $corrective->id)->get();
-                foreach($correctiveApprovers as $key => $approver)
-                {
-                    if($key == 0) 
-                    {
-                        $approver->status = "Pending";
-                        $approver->start_date = date('Y-m-d');
-                    }
-                    else 
-                    {
-                        $approver->status = "Waiting";
-                    }
-                    $approver->save();
-                }
-            }
-        }
-        elseif ($request->status == "verification" || $request->status == "done")
-        {
-            $buildingAdminApprover = Approver::where('corrective_id', $corrective->id)->where('status','Pending')->first();
-            $buildingAdminApprover->status = "Approved";
-            $buildingAdminApprover->save();
+        // if($request->status == "todo" || $request->status == "progress" || $request->status == "ba_return" || $request->status == "sqa_return")
+        // {
+        //     $correctiveApprovers = Approver::where('corrective_id', $corrective->id)->get();
+        //     if(count($correctiveApprovers) > 0)
+        //     {
+        //         foreach($correctiveApprovers as $key => $approver)
+        //         {
+        //             $approver->status = "Waiting";
+        //             $approver->start_date = null;
+        //             $approver->save();
+        //         }
+        //     }
+        // }
+        // elseif ($request->status == "review")
+        // {
+        //     $correctiveApprovers = Approver::where('corrective_id', $corrective->id)->get();
+        //     if(count($correctiveApprovers) == 0)
+        //     {
+        //         foreach($approvers as $key => $approver)
+        //         {
+        //             $btsApprover = new Approver;
+        //             $btsApprover->user_id = $approver;
+        //             $btsApprover->level = $key+1;
+        //             $btsApprover->corrective_id =  $corrective->id;
+        //             if($key == 0) 
+        //             {
+        //                 $btsApprover->status = "Pending";
+        //                 $btsApprover->start_date = date('Y-m-d');
+        //             }
+        //             else 
+        //             {
+        //                 $btsApprover->status = "Waiting";
+        //             }
+        //             $btsApprover->save();
+        //         }
+        //     }
+        //     else 
+        //     {
+        //         $correctiveApprovers = Approver::where('corrective_id', $corrective->id)->get();
+        //         foreach($correctiveApprovers as $key => $approver)
+        //         {
+        //             if($key == 0) 
+        //             {
+        //                 $approver->status = "Pending";
+        //                 $approver->start_date = date('Y-m-d');
+        //             }
+        //             else 
+        //             {
+        //                 $approver->status = "Waiting";
+        //             }
+        //             $approver->save();
+        //         }
+        //     }
+        // }
+        // elseif ($request->status == "verification" || $request->status == "done")
+        // {
+        //     $buildingAdminApprover = Approver::where('corrective_id', $corrective->id)->where('status','Pending')->first();
+        //     $buildingAdminApprover->status = "Approved";
+        //     $buildingAdminApprover->save();
 
-            $correctiveApprovers = Approver::where('corrective_id', $corrective->id)->where('status','Waiting')->get();
-            if(count($correctiveApprovers) > 0) 
-            {
-                foreach($correctiveApprovers as $key => $approver)
-                {
-                    if($key == 0) 
-                    {
-                        $approver->status = "Pending";
-                        $approver->start_date = date('Y-m-d');
-                    }
-                    else 
-                    {
-                        $approver->status = "Waiting";
-                    }
-                    $approver->save();
-                }
-            }
-            else
-            {
-                $corrective->status = "Closed";
-                $corrective->save();
-            }
-        }
+        //     $correctiveApprovers = Approver::where('corrective_id', $corrective->id)->where('status','Waiting')->get();
+        //     if(count($correctiveApprovers) > 0) 
+        //     {
+        //         foreach($correctiveApprovers as $key => $approver)
+        //         {
+        //             if($key == 0) 
+        //             {
+        //                 $approver->status = "Pending";
+        //                 $approver->start_date = date('Y-m-d');
+        //             }
+        //             else 
+        //             {
+        //                 $approver->status = "Waiting";
+        //             }
+        //             $approver->save();
+        //         }
+        //     }
+        //     else
+        //     {
+        //         $corrective->status = "Closed";
+        //         $corrective->save();
+        //     }
+        // }
 
         return response()->json([
             'status' => 'success',

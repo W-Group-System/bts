@@ -233,28 +233,28 @@
                 const id = target.getAttribute('data-correctiveid')
                 const assign = el.getAttribute('data-assign')
                 
-                if (fromStatus == "done") {
-                    return false
-                }
+                // if (fromStatus == "done") {
+                //     return false
+                // }
                 
-                if (accessArray.includes(Number(id))) {
-                    const roleArray = ["Building Engineer","House Keeping", "Multi-Skilled Technician"]
-                    if (roleArray.includes(currentRole)) {
-                        if (currentUser == assign) {
-                            return true
-                        }
-                    } else {
-                        // if (fromStatus == "verification" && toStatus == "ba_return") {
-                        //     return false
-                        // }
-                        return true
-                    }
-                }
-                else {
-                    return false
-                }
+                // if (accessArray.includes(Number(id))) {
+                //     const roleArray = ["Building Engineer","House Keeping", "Multi-Skilled Technician"]
+                //     if (roleArray.includes(currentRole)) {
+                //         if (currentUser == assign) {
+                //             return true
+                //         }
+                //     } else {
+                //         // if (fromStatus == "verification" && toStatus == "ba_return") {
+                //         //     return false
+                //         // }
+                //         return true
+                //     }
+                // }
+                // else {
+                //     return false
+                // }
 
-                return false
+                return true
             }
         })
     
