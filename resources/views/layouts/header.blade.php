@@ -165,11 +165,11 @@
                             </a>
                         </li>
                         @endcan
-                        @can('Corrective Board')
+                        @can('Corrective Task')
                         <li class="slide">
-                            <a href="{{ url('corrective-board') }}" class="side-menu__item">
+                            <a href="{{ url('corrective-task') }}" class="side-menu__item">
                                 <i class="bi bi-clipboard2 side-menu__icon"></i>
-                                <span class="side-menu__label">Corrective Board</span>
+                                <span class="side-menu__label">Corrective Task</span>
                             </a>
                         </li>
                         @endcan

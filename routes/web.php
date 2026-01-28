@@ -70,10 +70,10 @@ Route::group(['middleware' => 'auth'], function() {
     });
 
     // Corrective Board
-    Route::get('corrective-board', 'CorrectiveBoardController@index');
-    Route::prefix('corrective-board')->group(function() {
-        Route::post('/store','CorrectiveBoardController@store');
-        Route::get('/show/{id}','CorrectiveBoardController@show');
+    Route::get('corrective-task', 'CorrectiveTaskController@index');
+    Route::prefix('corrective-task')->group(function() {
+        Route::post('/store','CorrectiveTaskController@store');
+        Route::get('/show/{id}','CorrectiveTaskController@show');
     });
 
     // Issues

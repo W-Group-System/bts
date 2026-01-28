@@ -6,7 +6,7 @@ use App\CorrectiveBoard;
 use App\CorrectiveBoardAccess;
 use Illuminate\Http\Request;
 
-class CorrectiveBoardController extends Controller
+class CorrectiveTaskController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,16 +15,16 @@ class CorrectiveBoardController extends Controller
      */
     public function index()
     {
-        $corrective_board = CorrectiveBoard::with('corrective')->get();
+        // $corrective_board = CorrectiveBoard::with('corrective')->get();
 
-        $getRole = auth()->user()->getRoleNames()->first();
-        $access = CorrectiveBoardAccess::where('role', $getRole)->get();
+        // $getRole = auth()->user()->getRoleNames()->first();
+        // $access = CorrectiveBoardAccess::where('role', $getRole)->get();
         
-        return view('corrective_board.index',
+        return view('corrective_task.index',
             array(
-                'corrective_board' => $corrective_board,
-                'access' => $access,
-                'getRole' => $getRole
+                // 'corrective_board' => $corrective_board,
+                // 'access' => $access,
+                // 'getRole' => $getRole
             )
         );
     }
