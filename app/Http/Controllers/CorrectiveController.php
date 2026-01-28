@@ -194,15 +194,15 @@ class CorrectiveController extends Controller
         //
     }
 
-    public function cancelled($id)
+    public function cancelled(Request $request, $id)
     {
         $corrective = Corrective::findOrFail($id);
         $corrective->status = "Cancelled";
+        $corrective->cancel_remark = $request->remarks;
         $corrective->save();
 
-        // toastr()->success('Successfully Cancelled');
-        // return back();
-        return response()->json(['status' => 'success'],200);
+        toastr()->success('Successfully Cancelled');
+        return back();
     }
 
     public function updateStatus(Request $request)

@@ -1,18 +1,5 @@
 @extends('layouts.header')
 
-@section('css')
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('assets/libs/filepond/filepond.min.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/libs/filepond-plugin-image-edit/filepond-plugin-image-edit.min.css') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
-<style>
-    textarea.is-invalid + .note-editor .note-editing-area
-    {
-        border: 1px solid red;
-    }
-</style>
-@endsection
-
 @section('content')
 <!-- Page Header -->
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
@@ -126,7 +113,7 @@
                                         </a>
 
                                         @if($c->status != "Cancelled")
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="cancelButton({{ $c->id }})">
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancel{{ $c->id }}">
                                             <i class="ri-close-circle-line"></i>
                                             Cancel
                                         </button>
@@ -153,6 +140,7 @@
                                 </tr>
 
                                 {{-- @include('corrective.edit') --}}
+                                @include('corrective.cancel_modal')
                             @endforeach
                         </tbody>
                     </table>
@@ -163,100 +151,4 @@
 </div>
 <!--End::row-1 -->
 {{-- @include('corrective.newTask') --}}
-@endsection
-
-@section('js')
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
-<script src="{{ asset('assets/libs/filepond/filepond.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-image-edit/filepond-plugin-image-edit.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-image-transform/filepond-plugin-image-transform.min.js') }}"></script>
-<script>
-    function cancelButton(id) {
-        $.confirm({
-            title: 'Confirm!',
-            content: 'Are you sure you want to cancel?',
-            buttons: {
-                confirm: function () {
-                    $.ajax({
-                        type:"POST",
-                        url:"{{ url('/corrective/cancel') }}/"+id,
-                        data: {
-                            _token:"{{ csrf_token() }}"
-                        },
-                        success: function() {
-                            $.alert('Successfully Cancelled');
-
-                            setTimeout(() => {
-                                location.reload()
-                            }, 500);
-                        }
-                    })
-                },
-                cancel: function () {
-                    $.alert('Canceled!');
-                }
-            }
-        });
-    }
-
-    $(document).ready(function() {
-        $('.summernote').summernote({
-            height: 300,
-            placeholder: "Write task..."
-        });
-
-        const MultipleElement = document.querySelector('.blog-images');
-        FilePond.create(MultipleElement, {
-            storeAsFile: true
-        });
-
-        $('.modal').on('shown.bs.modal', function() {
-            $(this).find('.select2').select2({
-                dropdownParent: $(this)
-            })
-        })
-
-        $("#typeOfIssues").on('change', function() {
-            const value = $(this).val()
-
-            $.ajax({
-                type:"POST",
-                url:"{{ url('/corrective/refresh-corrective') }}",
-                data: {
-                    category: value,
-                    _token:"{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    console.log(response);
-                    
-                    if (response.data) {
-                        $("#qtyColumn").prop('hidden', false)
-                    }
-                    else {
-                        $("#qtyColumn").prop('hidden', true)
-                    }
-
-                    if (response.haveOptions) {
-                        $("#subtypeContainer").prop('hidden', false)
-                        $("#descriptionContainer").prop('hidden', false)
-
-                        $("#subTypeIssues").html(response.options)
-                    }
-                    else {
-                        $("#subtypeContainer").prop('hidden', true)
-                        $("#descriptionContainer").prop('hidden', true)
-                    }
-                }
-            })
-        })
-    });
-</script>
 @endsection
