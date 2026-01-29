@@ -22,10 +22,6 @@ class Corrective extends Model
     {
         return $this->belongsTo(Building::class);
     }
-    public function correctiveBoard()
-    {
-        return $this->belongsTo(CorrectiveBoard::class);
-    }
     public function correctiveAttachment()
     {
         return $this->hasMany(CorrectiveAttachment::class);

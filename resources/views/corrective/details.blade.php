@@ -26,23 +26,31 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="d-flex flex-row align-items-center gap-4">
+                    @if(auth()->user()->hasRole('Building Administrator') || auth()->user()->hasRole('Building Engineer'))
+                    <a href="{{ url('corrective-task') }}" class="btn btn-danger btn-sm">
+                        <i class="ri-arrow-left-line"></i>
+                        Back
+                    </a>
+                    @else
                     <a href="{{ url('corrective') }}" class="btn btn-danger btn-sm">
                         <i class="ri-arrow-left-line"></i>
                         Back
                     </a>
+                    @endif
+
                     <h5 class="card-title">
                         Task Summary
                     </h5>
                 </div>
-                @if($corrective->corrective_board_id == 1)
+                @role('Building Administrator')
                 <div class="btn-list">
                     <button class="btn btn-success btn-sm btn-wave me-0" data-bs-toggle="modal" data-bs-target="#assignTask{{ $corrective->id }}">
                         <i class="ri-edit-line me-1 align-middle" ></i>
                         Assign Task
                     </button>
                 </div>
-                @endif
                 @include('corrective.assign')
+                @endrole
             </div>
             <div class="card-body">
                 <div class="fs-15 fw-semibold mb-2">Task Description :</div>
@@ -91,45 +99,16 @@
                         <span class="d-block text-muted fs-12">Due Date</span>
                         <span class="d-block fs-14 fw-semibold">{{ date('d, M Y', strtotime($corrective->due_date)) }}</span>
                     </div>
-                    <div class="task-details-progress">
-                        <span class="d-block text-muted fs-12 mb-1">Progress</span>
-                        @php
-                            $progress = 0;
-                            if ($corrective->correctiveBoard->name == "todo")
-                            {
-                                $progress = 0;
-                            }
-                            elseif($corrective->correctiveBoard->name == "inprogress")
-                            {
-                                $progress = 30;
-                            }
-                            elseif($corrective->correctiveBoard->name == "review")
-                            {
-                                $progress = 60;
-                            }
-                            elseif($corrective->correctiveBoard->name == "done")
-                            {
-                                $progress = 100;
-                            }
-                        @endphp
-                        <div class="d-flex align-items-center">
-                            <div class="progress progress-xs progress-animate flex-fill me-2" role="progressbar"
-                                aria-valuenow="{{ $progress }}" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar bg-primary" style="width: {{ $progress }}%"></div>
-                            </div>
-                            <div class="text-muted fs-11">{{ $progress }}%</div>
-                        </div>
-                    </div>
-                    {{-- <div>
-                        <span class="d-block text-muted fs-12">Efforts</span>
-                        <span class="d-block fs-14 fw-semibold">45H : 35M : 45S</span>
-                    </div> --}}
                 </div>
             </div>
         </div>
         <div class="card custom-card">
-            <div class="card-header">
+            <div class="card-header flex-row justify-content-between">
                 <div class="card-title">Task Discussions</div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateTask">
+                    <i class="ri-add-line"></i>
+                    Update status
+                </button>
             </div>
             <div class="card-body">
                 <ul class="list-unstyled profile-timeline">
@@ -175,6 +154,7 @@
                     @endif
                 </ul>
             </div>
+            @if($corrective->assign_to == auth()->id())
             <div class="card-footer">
                 <div class="d-flex align-items-center lh-1">
                     <div class="me-3">
@@ -201,6 +181,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
     <div class="col-xl-3">
@@ -241,7 +222,7 @@
                             <tr>
                                 <td><span class="fw-semibold">Project Status :</span></td>
                                 <td>
-                                    <span class="fw-semibold text-secondary">{{ $corrective->correctiveBoard->name }}</span>
+                                    <span class="fw-semibold text-secondary">{{ $corrective->status }}</span>
                                 </td>
                             </tr>
                             <tr>
@@ -352,6 +333,7 @@
 <!--End::row-1 -->
 
 @include('corrective.upload_attachment')
+@include('corrective_task.update_task')
 @endsection
 
 @section('js')

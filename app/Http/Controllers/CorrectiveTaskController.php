@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\CorrectiveBoard;
-use App\CorrectiveBoardAccess;
+use App\Corrective;
 use Illuminate\Http\Request;
 
 class CorrectiveTaskController extends Controller
@@ -15,16 +14,11 @@ class CorrectiveTaskController extends Controller
      */
     public function index()
     {
-        // $corrective_board = CorrectiveBoard::with('corrective')->get();
-
-        // $getRole = auth()->user()->getRoleNames()->first();
-        // $access = CorrectiveBoardAccess::where('role', $getRole)->get();
+        $corrective = Corrective::with('createdBy','assignTo')->where('building_id', auth()->user()->building_id)->get();
         
         return view('corrective_task.index',
             array(
-                // 'corrective_board' => $corrective_board,
-                // 'access' => $access,
-                // 'getRole' => $getRole
+                'corrective' => $corrective
             )
         );
     }
@@ -48,16 +42,16 @@ class CorrectiveTaskController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        $this->validate($request,[
-            'board_title' => 'required'
-        ]);
+        // $this->validate($request,[
+        //     'board_title' => 'required'
+        // ]);
         
-        $corrective_board = new CorrectiveBoard;
-        $corrective_board->name = $request->board_title;
-        $corrective_board->save();
+        // $corrective_board = new CorrectiveBoard;
+        // $corrective_board->name = $request->board_title;
+        // $corrective_board->save();
 
-        toastr()->success('Successfully Saved');
-        return back();
+        // toastr()->success('Successfully Saved');
+        // return back();
     }
 
     /**

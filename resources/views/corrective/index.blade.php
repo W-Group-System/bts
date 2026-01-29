@@ -87,7 +87,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap table-bordered table-sm" id="datatable-basic" style="width: 100%;">
+                    <table class="table text-nowrap" id="datatable-basic" style="width: 100%;">
                         <thead>
                             <tr>
                                 <th scope="col">Action</th>
