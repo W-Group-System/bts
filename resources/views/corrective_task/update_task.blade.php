@@ -23,17 +23,27 @@
                             <select name="action" class="form-select @if($errors->has('action')) is-invalid @endif">
                                 <option value="" disabled selected value>Select action</option>
                                 @if(!in_array($role, $excludedRoles))
-                                <option value="Ongoing">Ongoing</option>
-                                <option value="For Review">For Review</option>
+                                    @if($corrective->status == "Acknowledge" || $corrective->status == "Returned to Resolver")
+                                    <option value="Ongoing">Ongoing</option>
+                                    @endif
+                                    @if($corrective->status == "Ongoing")
+                                    <option value="For Review">For Review</option>
+                                    @endif
                                 @endif
                                 @role('Building Administrator')
-                                <option value="Acknowledge">Acknowledge</option>
-                                <option value="Returned to Resolver">Returned to Resolver</option>
-                                <option value="For Verification">For Verification</option>
+                                    @if($corrective->status == "Todo")
+                                    <option value="Acknowledge">Acknowledge</option>
+                                    @endif
+                                    @if($corrective->status == "For Review")
+                                    <option value="Returned to Resolver">Returned to Resolver</option>
+                                    <option value="For Verification">For Verification</option>
+                                    @endif
                                 @endrole
                                 @role("Security Quality Assurance")
-                                <option value="Done">Done</option>
-                                <option value="Returned to Resolver">Returned to Resolver</option>
+                                    @if($corrective->status == "For Verification")
+                                    <option value="Returned to Resolver">Returned to Resolver</option>
+                                    <option value="Done">Done</option>
+                                    @endif
                                 @endrole
                             </select>
                             @if($errors->has('action'))
