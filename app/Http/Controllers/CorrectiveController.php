@@ -217,6 +217,10 @@ class CorrectiveController extends Controller
 
         $corrective = Corrective::findOrFail($request->corrective_id);
         $corrective->status = $request->action;
+        if($request->action == "Acknowledge")
+        {
+            $corrective->date_acknowledge = date('Y-m-d h:i:s');
+        }
         $corrective->save();
 
         $getBuildingAdmin = Building::with('user')->where('id', auth()->user()->building_id)->first();

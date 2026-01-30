@@ -26,7 +26,8 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="d-flex flex-row align-items-center gap-4">
-                    @if(auth()->user()->hasRole('Building Administrator') || auth()->user()->hasRole('Building Engineer'))
+                    @if(auth()->user()->hasRole('Building Administrator') || auth()->user()->hasRole('Building
+                    Engineer'))
                     <a href="{{ url('corrective-task') }}" class="btn btn-danger btn-sm">
                         <i class="ri-arrow-left-line"></i>
                         Back
@@ -44,8 +45,9 @@
                 </div>
                 @role('Building Administrator')
                 <div class="btn-list">
-                    <button class="btn btn-success btn-sm btn-wave me-0" data-bs-toggle="modal" data-bs-target="#assignTask{{ $corrective->id }}">
-                        <i class="ri-edit-line me-1 align-middle" ></i>
+                    <button class="btn btn-success btn-sm btn-wave me-0" data-bs-toggle="modal"
+                        data-bs-target="#assignTask{{ $corrective->id }}">
+                        <i class="ri-edit-line me-1 align-middle"></i>
                         Assign Task
                     </button>
                 </div>
@@ -87,17 +89,39 @@
                         <span class="d-block fs-14 fw-semibold">No assign yet</span>
                         @endif
                     </div>
-                    <div>
+                    {{-- <div>
                         <span class="d-block text-muted fs-12">Assigned Date</span>
                         @if($corrective->date_assign)
-                        <span class="d-block fs-14 fw-semibold">{{ date('M d Y', strtotime($corrective->date_assign)) }}</span>
+                        <span class="d-block fs-14 fw-semibold">{{ date('M d Y', strtotime($corrective->date_assign))
+                            }}</span>
+                        @else
+                        <span class="d-block fs-14 fw-semibold">No assign date</span>
+                        @endif
+                    </div> --}}
+                    <div>
+                        <span class="d-block text-muted fs-12">Acknowledge Date</span>
+                        @if($corrective->date_acknowledge)
+                        <span class="d-block fs-14 fw-semibold">{{ date('M d Y',
+                            strtotime($corrective->date_acknowledge)) }}</span>
                         @else
                         <span class="d-block fs-14 fw-semibold">No assign date</span>
                         @endif
                     </div>
                     <div>
                         <span class="d-block text-muted fs-12">Due Date</span>
-                        <span class="d-block fs-14 fw-semibold">{{ date('d, M Y', strtotime($corrective->due_date)) }}</span>
+                        @php
+                        $due_date = "";
+                        if($corrective->priority == "High") {
+                            $due_date = date('M d Y', strtotime($corrective->date_acknowledge."+1 day"));
+                        }
+                        elseif($corrective->priority == "Medium") {
+                            $due_date = date('M d Y', strtotime($corrective->date_acknowledge."+2 days"));
+                        }
+                        elseif($corrective->priority == "Low") {
+                            $due_date = date('M d Y', strtotime($corrective->date_acknowledge."+3 days"));
+                        }
+                        @endphp
+                        <span class="d-block fs-14 fw-semibold">{{ $due_date }}</span>
                     </div>
                 </div>
             </div>
@@ -113,44 +137,44 @@
             <div class="card-body">
                 <ul class="list-unstyled profile-timeline">
                     @if(count($corrective->comment) > 0)
-                        @foreach ($corrective->comment as $comment)
-                            <li>
-                                <div>
-                                    <span
-                                        class="avatar avatar-sm bg-primary-transparent avatar-rounded profile-timeline-avatar">
-                                        @php
-                                            $name = auth()->user()->name;
-                                            $first_letter = substr($name, 0,1);
-                                        @endphp
-                                        {{ strtoupper($first_letter) }}
-                                    </span>
-                                    <p class="mb-2">
-                                        <b>{{ auth()->user()->name }}</b><a class="text-secondary"
-                                            href="javascript:void(0);"></a><span
-                                            class="float-end fs-11 text-muted">{{ $comment->created_at->diffForHumans() }}</span>
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        @if($comment->attachment)
-                                            @if($comment->attachment_type == "pdf")
-                                            <a href="{{ url($comment->attachment) }}" target="_blank">
-                                                <i class="bi bi-file-earmark-pdf"></i>
-                                                Attachment
-                                            </a>
-                                            @else 
-                                            {{-- <a href="{{ url($comment->attachment) }}" target="_blank">
-                                                <i class="bi bi-file-image"></i>
-                                            </a> --}}
-                                            <img src="{{ url($comment->attachment) }}" alt="" class="img-thumbnail">
-                                            @endif
-                                        @else
-                                        <p class="fw-normal">{!! $comment->comment !!}</p>
-                                        @endif
-                                    </p>
-                                </div>
-                            </li>
-                        @endforeach
-                    @else 
-                        <p class="text-muted fw-semibold" style="font-style: italic;">No comment...</p>   
+                    @foreach ($corrective->comment as $comment)
+                    <li>
+                        <div>
+                            <span
+                                class="avatar avatar-sm bg-primary-transparent avatar-rounded profile-timeline-avatar">
+                                @php
+                                $name = auth()->user()->name;
+                                $first_letter = substr($name, 0,1);
+                                @endphp
+                                {{ strtoupper($first_letter) }}
+                            </span>
+                            <p class="mb-2">
+                                <b>{{ auth()->user()->name }}</b><a class="text-secondary"
+                                    href="javascript:void(0);"></a><span class="float-end fs-11 text-muted">{{
+                                    $comment->created_at->diffForHumans() }}</span>
+                            </p>
+                            <p class="text-muted mb-0">
+                                @if($comment->attachment)
+                                @if($comment->attachment_type == "pdf")
+                                <a href="{{ url($comment->attachment) }}" target="_blank">
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                    Attachment
+                                </a>
+                                @else
+                                {{-- <a href="{{ url($comment->attachment) }}" target="_blank">
+                                    <i class="bi bi-file-image"></i>
+                                </a> --}}
+                                <img src="{{ url($comment->attachment) }}" alt="" class="img-thumbnail">
+                                @endif
+                                @else
+                            <p class="fw-normal">{!! $comment->comment !!}</p>
+                            @endif
+                            </p>
+                        </div>
+                    </li>
+                    @endforeach
+                    @else
+                    <p class="text-muted fw-semibold" style="font-style: italic;">No comment...</p>
                     @endif
                 </ul>
             </div>
@@ -166,13 +190,19 @@
                         <form method="POST" action="{{ url('/corrective/comments/'.$corrective->id) }}">
                             @csrf
                             <div class="input-group">
-                                <input type="text" class="form-control w-50 @if($errors->has('comment')) is-invalid @endif" name="comment" placeholder="Post Anything" aria-label="Recipient's username with two button addons">
-                                {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
-                                        class="bi bi-emoji-smile"></i></button> --}}
-                                <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button" data-bs-toggle="modal" data-bs-target="#attachment"><i class="bi bi-paperclip"></i></button>
-                                {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"><i
-                                        class="bi bi-camera"></i></button> --}}
-                                <button class="btn btn-primary btn-wave waves-effect waves-light" type="submit">Post</button>
+                                <input type="text"
+                                    class="form-control w-50 @if($errors->has('comment')) is-invalid @endif"
+                                    name="comment" placeholder="Post Anything"
+                                    aria-label="Recipient's username with two button addons">
+                                {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light"
+                                    type="button"><i class="bi bi-emoji-smile"></i></button> --}}
+                                <button class="btn btn-outline-light btn-wave waves-effect waves-light" type="button"
+                                    data-bs-toggle="modal" data-bs-target="#attachment"><i
+                                        class="bi bi-paperclip"></i></button>
+                                {{-- <button class="btn btn-outline-light btn-wave waves-effect waves-light"
+                                    type="button"><i class="bi bi-camera"></i></button> --}}
+                                <button class="btn btn-primary btn-wave waves-effect waves-light"
+                                    type="submit">Post</button>
                                 @if($errors->has('comment'))
                                 <span class="invalid-feedback">{{ $errors->first('comment') }}</span>
                                 @endif
@@ -231,9 +261,9 @@
                                     @if($corrective->priority == "High")
                                     <span class="badge bg-danger-transparent">High</span>
                                     @elseif($corrective->priority == "Medium")
-                                    <span class="badge bg-warning-transparent">High</span>
+                                    <span class="badge bg-warning-transparent">Medium</span>
                                     @elseif($corrective->priority == "Low")
-                                    <span class="badge bg-info-transparent">High</span>
+                                    <span class="badge bg-info-transparent">Low</span>
                                     @endif
                                 </td>
                             </tr>
@@ -253,7 +283,8 @@
                             </tr>
                             <tr>
                                 <td><span class="fw-semibold">Subcategory :</span></td>
-                                <td><span class="fw-semibold">{{ optional($corrective->subcategory)->subcategory }}</span></td>
+                                <td><span class="fw-semibold">{{ optional($corrective->subcategory)->subcategory
+                                        }}</span></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-semibold">Description :</span></td>
@@ -308,10 +339,11 @@
                                 </span>
                             </div>
                             <div class="flex-fill">
-                                <a href="{{ url($attachment->attachment) }}" target="_blank"><span class="d-block fw-semibold">{{ $attachment->name }}</span></a>
+                                <a href="{{ url($attachment->attachment) }}" target="_blank"><span
+                                        class="d-block fw-semibold">{{ $attachment->name }}</span></a>
                                 <span class="d-block text-muted fs-12 fw-normal">
                                     @php
-                                        $fileSize = $attachment->size / 1024;
+                                    $fileSize = $attachment->size / 1024;
                                     @endphp
                                     {{ number_format($fileSize) }} MB
                                 </span>
@@ -339,14 +371,19 @@
 @section('js')
 <script src="{{ asset('assets/libs/filepond/filepond.min.js') }}"></script>
 <script src="{{ asset('assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}"></script>
+<script
+    src="{{ asset('assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}">
+</script>
+<script src="{{ asset('assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}">
+</script>
 <script src="{{ asset('assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js') }}"></script>
 <script src="{{ asset('assets/libs/filepond-plugin-image-edit/filepond-plugin-image-edit.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js') }}">
+</script>
 <script src="{{ asset('assets/libs/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js') }}"></script>
 <script src="{{ asset('assets/libs/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js') }}"></script>
-<script src="{{ asset('assets/libs/filepond-plugin-image-transform/filepond-plugin-image-transform.min.js') }}"></script>
+<script src="{{ asset('assets/libs/filepond-plugin-image-transform/filepond-plugin-image-transform.min.js') }}">
+</script>
 <script>
     $(document).ready(function() {
         const MultipleElement = document.querySelector('.blog-images');
